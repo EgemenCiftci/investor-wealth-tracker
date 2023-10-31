@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "investor-wealth-tracker": {
+      "hosting": {
+        "investor-wealth-tracker": [
+          "investor-wealth-tracker"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "investor-wealth-tracker"
+  }
+}
