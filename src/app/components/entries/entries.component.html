@@ -1,0 +1,94 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Entries</mat-card-title>
+        <mat-card-subtitle>Count: {{entries.length}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let entry of entries">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>{{entry.date}}</mat-panel-title>
+                    <mat-panel-description>Total Net Worth: {{getTotalNetWorth(entry)}}</mat-panel-description>
+                </mat-expansion-panel-header>
+                <mat-form-field>
+                    <mat-label>Date</mat-label>
+                    <input matInput [matDatepicker]="picker" [ngModel]="entry.date" (dateChange)="onDateChange($event, entry)">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Assets</mat-panel-title>
+                        <mat-panel-description>Total: {{getValueSum(entry.assets)}}</mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let asset of entry.assets">
+                        <mat-form-field>
+                            <mat-label>Type</mat-label>
+                            <mat-select [(ngModel)]="asset.type">
+                                <mat-option value="liquid">Liquid</mat-option>
+                                <mat-option value="longTerm">Long Term</mat-option>
+                                <mat-option value="pensionFundsAndSimilar">Pension Funds And Similar</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Name</mat-label>
+                            <input matInput type="text" [(ngModel)]="asset.name">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Value</mat-label>
+                            <input matInput type="number" [(ngModel)]="asset.value">
+                        </mat-form-field>
+                    </div>
+                    <button mat-button (click)="addAsset(entry.assets)">
+                        <mat-icon>add</mat-icon>
+                        <span>Add Asset</span>
+                    </button>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Debts</mat-panel-title>
+                        <mat-panel-description>Total: {{getValueSum(entry.debts)}}</mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let debt of entry.debts">
+                        <mat-form-field>
+                            <mat-label>Type</mat-label>
+                            <mat-select [(ngModel)]="debt.type">
+                                <mat-option value="shortTerm">Short Term</mat-option>
+                                <mat-option value="longTerm">Long Term</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Name</mat-label>
+                            <input matInput type="text" [(ngModel)]="debt.name">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Value</mat-label>
+                            <input matInput type="number" [(ngModel)]="debt.value">
+                        </mat-form-field>
+                    </div>
+                    <button mat-button (click)="addDebt(entry.debts)">
+                        <mat-icon>add</mat-icon>
+                        <span>Add Debt</span>
+                    </button>
+                </mat-expansion-panel>
+            </mat-expansion-panel>
+            <button mat-button (click)="addEntry(entries)">
+                <mat-icon>add</mat-icon>
+                <span>Add Entry</span>
+            </button>
+        </mat-accordion>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="accent" (click)="save()">
+            <mat-icon>save</mat-icon>
+            <span>Save</span>
+        </button>
+        <button mat-button color="warn" (click)="cancel()">
+            <mat-icon>cancel</mat-icon>
+            <span>Cancel</span>
+        </button>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
