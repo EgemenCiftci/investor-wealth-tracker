@@ -1,7 +1,7 @@
 export const environment = {
     firebaseConfig: {
         apiKey: "AIzaSyDdYMGRk-JXY6VXIEpzJG328P_nPer13V4",
-        authDomain: "investor-wealth-tracker.firebaseapp.com",
+        authDomain: "investor-wealth-tracker.web.app",
         databaseURL: "https://investor-wealth-tracker-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "investor-wealth-tracker",
         storageBucket: "investor-wealth-tracker.appspot.com",
