@@ -6,7 +6,8 @@
         <p>Please click below button to verify the email. {{this.authenticationService.getCurrentUser()?.email}}</p>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="verify()">Verify</button>
+        <button mat-button (click)="verify()">Verify</button>
+        <button mat-button color="warn" (click)="cancel()">Cancel</button>
     </mat-card-actions>
     <mat-card-footer>
         <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>

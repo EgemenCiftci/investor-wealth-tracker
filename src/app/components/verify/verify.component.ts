@@ -29,4 +29,16 @@ export class VerifyComponent {
       this.isBusy = false;
     }
   }
+
+  async cancel() {
+    try {
+      this.isBusy = true;
+      await this.authenticationService.deleteUser();
+      await this.router.navigate(['/login']);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
 }

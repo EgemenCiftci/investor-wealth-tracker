@@ -8,14 +8,16 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Investor Wealth Tracker';
-
   constructor(public authenticationService: AuthenticationService,
     private router: Router) {
   }
 
   async logout() {
-    await this.authenticationService.signOut();
+    await this.authenticationService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getUserLetter() {
+    return this.authenticationService.getCurrentUser()?.displayName?.charAt(0)?.toUpperCase() ?? '?';
   }
 }

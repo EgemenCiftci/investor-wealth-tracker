@@ -8,18 +8,25 @@
             <mat-expansion-panel *ngFor="let entry of entries">
                 <mat-expansion-panel-header>
                     <mat-panel-title>{{entry.date}}</mat-panel-title>
-                    <mat-panel-description>Total Net Worth: {{getTotalNetWorth(entry)}}</mat-panel-description>
+                    <mat-panel-description>Total Net Worth:
+                        {{entriesService.getTotalNetWorth(entry)}}</mat-panel-description>
                 </mat-expansion-panel-header>
                 <mat-form-field>
                     <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" [ngModel]="entry.date" (dateChange)="onDateChange($event, entry)">
+                    <input matInput [matDatepicker]="picker" [ngModel]="entry.date"
+                        (dateChange)="onDateChange($event, entry)">
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
+                <button mat-button (click)="removeEntry(entry)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Remove Entry</span>
+                </button>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Assets</mat-panel-title>
-                        <mat-panel-description>Total: {{getValueSum(entry.assets)}}</mat-panel-description>
+                        <mat-panel-description>Total:
+                            {{entriesService.getValueSum(entry.assets)}}</mat-panel-description>
                     </mat-expansion-panel-header>
                     <div *ngFor="let asset of entry.assets">
                         <mat-form-field>
@@ -38,8 +45,12 @@
                             <mat-label>Value</mat-label>
                             <input matInput type="number" [(ngModel)]="asset.value">
                         </mat-form-field>
+                        <button mat-button (click)="removeAsset(entry, asset)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Remove Asset</span>
+                        </button>
                     </div>
-                    <button mat-button (click)="addAsset(entry.assets)">
+                    <button mat-button (click)="addAsset(entry)">
                         <mat-icon>add</mat-icon>
                         <span>Add Asset</span>
                     </button>
@@ -47,7 +58,8 @@
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Debts</mat-panel-title>
-                        <mat-panel-description>Total: {{getValueSum(entry.debts)}}</mat-panel-description>
+                        <mat-panel-description>Total:
+                            {{entriesService.getValueSum(entry.debts)}}</mat-panel-description>
                     </mat-expansion-panel-header>
                     <div *ngFor="let debt of entry.debts">
                         <mat-form-field>
@@ -65,8 +77,12 @@
                             <mat-label>Value</mat-label>
                             <input matInput type="number" [(ngModel)]="debt.value">
                         </mat-form-field>
+                        <button mat-button (click)="removeDebt(entry, debt)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Remove Debt</span>
+                        </button>
                     </div>
-                    <button mat-button (click)="addDebt(entry.debts)">
+                    <button mat-button (click)="addDebt(entry)">
                         <mat-icon>add</mat-icon>
                         <span>Add Debt</span>
                     </button>

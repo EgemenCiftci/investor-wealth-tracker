@@ -51,20 +51,12 @@ export class DashboardComponent implements OnInit {
     try {
       this.isBusy = true;
       const entries = await this.entriesService.getEntries();
-      data = entries.map(entry => ({ x: entry.date, y: this.getTotalNetWorth(entry) }));
+      data = entries.map(entry => ({ x: entry.date, y: this.entriesService.getTotalNetWorth(entry) }));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
       this.isBusy = false;
       return data;
     }
-  }
-
-  private getValueSum(array: Asset[] | Debt[]): number {
-    return array.map(x => x.value).reduce((x, y) => x + y, 0);
-  }
-
-  private getTotalNetWorth(entry: Entry): number {
-    return this.getValueSum(entry.assets) - this.getValueSum(entry.debts);
   }
 }

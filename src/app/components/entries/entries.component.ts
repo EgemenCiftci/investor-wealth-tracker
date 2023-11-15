@@ -16,7 +16,7 @@ export class EntriesComponent {
   entries: Entry[] = [];
   isBusy = false;
 
-  constructor(private entriesService: EntriesService,
+  constructor(public entriesService: EntriesService,
     private snackBarService: SnackBarService) {
     this.entriesService.init();
     this.cancel();
@@ -45,15 +45,7 @@ export class EntriesComponent {
     }
   }
 
-  getValueSum(array: Asset[] | Debt[]): number {
-    return array.map(x => x.value).reduce((x, y) => x + y, 0);
-  }
-
-  getTotalNetWorth(entry: Entry): number {
-    return this.getValueSum(entry.assets) - this.getValueSum(entry.debts);
-  }
-
-  addEntry(entries: Entry[]){
+  addEntry(entries: Entry[]) {
     try {
       this.isBusy = true;
       entries.push(new Entry(this.formatDate(new Date()), [], []))
@@ -64,10 +56,12 @@ export class EntriesComponent {
     }
   }
 
-  addAsset(assets: Asset[]){
+  addAsset(entry: Entry) {
     try {
       this.isBusy = true;
-      assets.push(new Asset(AssetTypes.liquid, '', 0));
+      if (!entry.assets)
+        entry.assets = [];
+      entry.assets.push(new Asset(AssetTypes.liquid, '', 0));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -75,10 +69,12 @@ export class EntriesComponent {
     }
   }
 
-  addDebt(debts: Debt[]){
+  addDebt(entry: Entry) {
     try {
       this.isBusy = true;
-      debts.push(new Debt(DebtTypes.shortTerm, '', 0));
+      if (!entry.debts)
+        entry.debts = [];
+      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -94,7 +90,45 @@ export class EntriesComponent {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day}`;
+  }
+
+  removeEntry(entry: Entry) {
+    try {
+      this.isBusy = true;
+      const index = this.entries.indexOf(entry);
+      this.entries.splice(index, 1);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  removeAsset(entry: Entry, asset: Asset) {
+    try {
+      this.isBusy = true;
+      const entryIndex = this.entries.indexOf(entry);
+      const assetIndex = entry.assets.indexOf(asset);
+      this.entries[entryIndex].assets.splice(assetIndex, 1);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  removeDebt(entry: Entry, debt: Debt) {
+    try {
+      this.isBusy = true;
+      const entryIndex = this.entries.indexOf(entry);
+      const debtIndex = entry.debts.indexOf(debt);
+      this.entries[entryIndex].debts.splice(debtIndex, 1);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
   }
 }

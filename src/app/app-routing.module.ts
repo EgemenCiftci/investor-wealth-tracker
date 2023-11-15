@@ -6,11 +6,13 @@ import { AboutComponent } from './components/about/about.component';
 import { LoginComponent } from './components/login/login.component';
 import { authenticationGuard } from './guards/authentication.guard';
 import { VerifyComponent } from './components/verify/verify.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [authenticationGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'verify', component: VerifyComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'entries', component: EntriesComponent, canActivate: [authenticationGuard] },
   { path: 'about', component: AboutComponent },
   { path: '**', redirectTo: '' }

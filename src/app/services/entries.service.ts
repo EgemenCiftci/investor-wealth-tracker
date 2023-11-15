@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { Database, DatabaseReference, child, get, push, ref, remove, set, update } from '@angular/fire/database';
 import { Entry } from '../models/entry';
+import { Asset } from '../models/asset';
+import { Debt } from '../models/debt';
 
 @Injectable({
   providedIn: 'root'
@@ -111,5 +113,13 @@ export class EntriesService {
     } else {
       throw new Error("Entries service is not initialized.");
     }
+  }
+
+  getValueSum(array: Asset[] | Debt[] | undefined): number {
+    return array?.map(x => x.value).reduce((x, y) => x + y, 0) ?? 0;
+  }
+
+  getTotalNetWorth(entry: Entry): number {
+    return this.getValueSum(entry.assets) - this.getValueSum(entry.debts);
   }
 }

@@ -4,26 +4,26 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class LoginComponent {
+export class RegisterComponent {
   isBusy = false;
+  displayName = '';
   email = '';
   password = '';
-  isRemember = false;
 
   constructor(private snackBarService: SnackBarService,
     private authenticationService: AuthenticationService,
     private router: Router) {
   }
 
-  async login() {
+  async register() {
     try {
       this.isBusy = true;
-      await this.authenticationService.login(this.email, this.password, this.isRemember);
-      await this.router.navigate(['/dashboard']);
+      await this.authenticationService.register(this.displayName, this.email, this.password);
+      await this.router.navigate(['/verify']);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {

@@ -15,6 +15,7 @@ import { EntriesComponent } from './components/entries/entries.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { VerifyComponent } from './components/verify/verify.component';
+import { RegisterComponent } from './components/register/register.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,8 +30,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTreeModule } from '@angular/material/tree';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     EntriesComponent,
     DashboardComponent,
     LoginComponent,
-    VerifyComponent
+    VerifyComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -59,8 +61,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatSnackBarModule,
     MatTooltipModule,
     MatMenuModule,
-    MatTreeModule,
     MatExpansionModule,
+    MatCheckboxModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),
