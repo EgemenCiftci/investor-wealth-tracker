@@ -51,7 +51,11 @@ export class AuthenticationService {
   async deleteUser() {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-      await deleteUser(currentUser);
+      if (currentUser.emailVerified) {
+        throw new Error('Current user email is already verified.');
+      } else {
+        await deleteUser(currentUser);
+      }
     } else {
       throw new Error('Current user is null.');
     }

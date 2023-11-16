@@ -12,7 +12,10 @@
         <mat-checkbox [(ngModel)]="isRemember">Remember me</mat-checkbox>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="login()">Login</button>
+        <button mat-button (click)="login()">
+            <mat-icon>login</mat-icon>
+            <span>Login</span>
+        </button>
     </mat-card-actions>
     <mat-card-footer>
         <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>

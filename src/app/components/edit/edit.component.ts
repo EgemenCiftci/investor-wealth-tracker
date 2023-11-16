@@ -4,31 +4,27 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.css']
 })
-export class RegisterComponent {
+export class EditComponent {
   isBusy = false;
   displayName = '';
   email = '';
-  password = '';
-  passwordRepeat = '';
+  oldPassword = '';
+  newPassword = '';
+  newPasswordRepeat = '';
 
   constructor(private snackBarService: SnackBarService,
     private authenticationService: AuthenticationService,
     private router: Router) {
   }
 
-  async register() {
+  async save() {
     try {
       this.isBusy = true;
-      if (this.password === this.passwordRepeat) {
-        await this.authenticationService.register(this.displayName, this.email, this.password);
-        await this.router.navigate(['/verify']);
-      } else {
-        this.snackBarService.showSnackBar('Passwords do not match!');
-      }
+
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {

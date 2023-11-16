@@ -14,6 +14,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login">Login</button>
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/register">Register</button>
+      <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" routerLink="/edit">Edit Profile</button>
       <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" (click)="logout()">Logout</button>
     </mat-menu>
   </nav>
