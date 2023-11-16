@@ -21,18 +21,24 @@ export class DashboardComponent implements OnInit {
     const data = await this.getData();
 
     this.options = {
-      tooltip:{},
-      xAxis: {
-        data: data.map(f => f.x),
-        silent: false,
-        splitLine: {
-          show: false,
-        },
+      title: {
+        text: 'Total Wealth',
+        top: 30,
+        left: 'center',
+        textStyle: {
+          color: 'white'
+        }
       },
-      yAxis: {},
+      tooltip: {},
+      xAxis: {
+        name: 'Date',
+        data: data.map(f => f.x),
+      },
+      yAxis: {
+        name: 'Wealth (PLN)'
+      },
       series: [
         {
-          name: 'line',
           type: 'line',
           data: data.map(f => f.y),
           animationDelay: idx => idx * 10,

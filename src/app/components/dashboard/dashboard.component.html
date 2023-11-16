@@ -3,7 +3,7 @@
         <mat-card-title>Dashboard</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div echarts [options]="options"></div>
+        <div echarts [options]="options" [loading]="isBusy"></div>
     </mat-card-content>
     <mat-card-footer>
         <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>

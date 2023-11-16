@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
+import { Auth, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 @Injectable({
@@ -12,11 +12,11 @@ export class AuthenticationService {
     return this.auth.currentUser;
   }
 
-  async register(name: string, email: string, password: string) {
+  async register(displayName: string, email: string, password: string) {
     await createUserWithEmailAndPassword(this.auth, email, password);
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-      await updateProfile(currentUser, { displayName: name, photoURL: undefined });
+      await updateProfile(currentUser, { displayName: displayName, photoURL: undefined });
       await sendEmailVerification(currentUser);
       await signOut(this.auth);
     } else {
@@ -37,27 +37,27 @@ export class AuthenticationService {
     await signOut(this.auth);
   }
 
-  async sendEmailVerification() {
+  async deleteUser() {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-      if (currentUser.emailVerified) {
-        throw new Error('Current user email is already verified.');
-      } else {
-        await sendEmailVerification(currentUser);
-      }
+        await deleteUser(currentUser);
     } else {
       throw new Error('Current user is null.');
     }
   }
 
-  async deleteUser() {
+  async updateUser(displayName: string, email: string, password: string) {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-      if (currentUser.emailVerified) {
-        throw new Error('Current user email is already verified.');
-      } else {
-        await deleteUser(currentUser);
-      }
+        if (currentUser.displayName !== displayName) {
+          await updateProfile(currentUser, { displayName: displayName, photoURL: undefined });
+        }
+
+        if (currentUser.email !== email) {
+          await updateEmail(currentUser, email);
+        }
+
+        await updatePassword(currentUser, password);
     } else {
       throw new Error('Current user is null.');
     }
