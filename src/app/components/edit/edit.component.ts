@@ -31,8 +31,23 @@ export class EditComponent implements OnInit {
 
   async save() {
     try {
-      this.isBusy = true;
+      if (!this.displayName) {
+        this.snackBarService.showSnackBar('Display name is required.');
+        return;
+      }
 
+      if (!this.email) {
+        this.snackBarService.showSnackBar('Email is required.');
+        return;
+      }
+
+      if (this.newPassword !== this.newPasswordRepeat) {
+        this.snackBarService.showSnackBar('Passwords do not match.');
+        return;
+      }
+
+      this.isBusy = true;
+      this.authenticationService.updateUser(this.displayName, this.email, this.newPassword);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
