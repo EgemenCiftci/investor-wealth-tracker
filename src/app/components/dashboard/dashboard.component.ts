@@ -21,15 +21,13 @@ export class DashboardComponent implements OnInit {
     const data = await this.getData();
 
     this.options = {
-      title: {
-        text: 'Total Wealth',
-        top: 30,
-        left: 'center',
+      tooltip: {},
+      legend: {
+        show: true,
         textStyle: {
           color: 'white'
         }
       },
-      tooltip: {},
       xAxis: {
         name: 'Date',
         data: data.map(f => f.x),
@@ -39,23 +37,40 @@ export class DashboardComponent implements OnInit {
       },
       series: [
         {
+          name: 'Total Wealth',
           type: 'line',
-          data: data.map(f => f.y),
-          animationDelay: idx => idx * 10,
+          color: 'blue',
+          data: data.map(f => f.w),
+        },
+        {
+          name: 'Assets',
+          type: 'line',
+          color: 'green',
+          data: data.map(f => f.a),
+        },
+        {
+          name: 'Debts',
+          type: 'line',
+          color: 'red',
+          data: data.map(f => f.d),
         }
       ],
       animationEasing: 'elasticOut',
-      animationDelayUpdate: idx => idx * 5,
     };
   }
 
-  private async getData(): Promise<Array<{ x: string, y: number }>> {
-    let data = Array<{ x: string, y: number }>();
+  private async getData(): Promise<Array<{ x: string, w: number, a: number, d: number }>> {
+    let data = Array<{ x: string, w: number, a: number, d: number }>();
     try {
       this.isBusy = true;
       const entries = await this.entriesService.getEntries();
       if (entries) {
-        data = entries.map(entry => ({ x: entry.date, y: this.entriesService.getTotalNetWorth(entry) }));
+        data = entries.map(entry => ({
+          x: entry.date,
+          w: this.entriesService.getTotalNetWorth(entry),
+          a: this.entriesService.getTotalAssets(entry),
+          d: this.entriesService.getTotalDebts(entry)
+        }));
       }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);

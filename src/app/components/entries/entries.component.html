@@ -18,9 +18,13 @@
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
-                <button mat-button (click)="removeEntry(entry)">
+                <button mat-button color="warn" (click)="removeEntry(entry)">
                     <mat-icon>delete</mat-icon>
                     <span>Remove Entry</span>
+                </button>
+                <button mat-button (click)="copyAndAddEntry(entry)">
+                    <mat-icon>add</mat-icon>
+                    <span>Copy & Add Entry</span>
                 </button>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
@@ -45,7 +49,7 @@
                             <mat-label>Value</mat-label>
                             <input matInput type="number" [(ngModel)]="asset.value">
                         </mat-form-field>
-                        <button mat-button (click)="removeAsset(entry, asset)">
+                        <button mat-button color="warn" (click)="removeAsset(entry, asset)">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Asset</span>
                         </button>
@@ -77,7 +81,7 @@
                             <mat-label>Value</mat-label>
                             <input matInput type="number" [(ngModel)]="debt.value">
                         </mat-form-field>
-                        <button mat-button (click)="removeDebt(entry, debt)">
+                        <button mat-button color="warn" (click)="removeDebt(entry, debt)">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Debt</span>
                         </button>

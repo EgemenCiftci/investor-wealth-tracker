@@ -122,4 +122,12 @@ export class EntriesService {
   getTotalNetWorth(entry: Entry): number {
     return this.getValueSum(entry.assets) - this.getValueSum(entry.debts);
   }
+
+  getTotalAssets(entry: Entry): number {
+    return this.getValueSum(entry.assets);
+  }
+
+  getTotalDebts(entry: Entry): number {
+    return this.getValueSum(entry.debts);
+  }
 }

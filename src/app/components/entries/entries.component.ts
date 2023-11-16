@@ -51,7 +51,23 @@ export class EntriesComponent {
       if (!this.entries) {
         this.entries = [];
       }
-      this.entries.push(new Entry(this.formatDate(new Date()), [], []))
+      this.entries.push(new Entry(this.formatDate(new Date()), [], []));
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  copyAndAddEntry(entry: Entry) {
+    try {
+      this.isBusy = true;
+      if (!this.entries) {
+        this.entries = [];
+      }
+      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value));
+      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value));
+      this.entries.push(new Entry(this.formatDate(new Date()), assets, debts));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
