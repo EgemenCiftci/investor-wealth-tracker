@@ -14,7 +14,6 @@ import { AboutComponent } from './components/about/about.component';
 import { EntriesComponent } from './components/entries/entries.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
-import { VerifyComponent } from './components/verify/verify.component';
 import { RegisterComponent } from './components/register/register.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -41,7 +40,6 @@ import { EditComponent } from './components/edit/edit.component';
     EntriesComponent,
     DashboardComponent,
     LoginComponent,
-    VerifyComponent,
     RegisterComponent,
     EditComponent
   ],

@@ -9,10 +9,7 @@ export const authenticationGuard: CanActivateFn = (route, state) => {
   if (currentUser) {
     if (currentUser.emailVerified) {
       return true;
-    } else {
-      return router.parseUrl('/verify');
     }
-  } else {
-    return router.parseUrl('/login');
   }
+  return router.parseUrl('/login');
 };

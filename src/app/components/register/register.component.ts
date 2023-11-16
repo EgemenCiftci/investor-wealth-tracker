@@ -25,7 +25,8 @@ export class RegisterComponent {
       this.isBusy = true;
       if (this.password === this.passwordRepeat) {
         await this.authenticationService.register(this.displayName, this.email, this.password);
-        await this.router.navigate(['/verify']);
+        this.snackBarService.showSnackBar('We have sent a verification email. Please check.');
+        await this.router.navigate(['/dashboard']);
       } else {
         this.snackBarService.showSnackBar('Passwords do not match!');
       }

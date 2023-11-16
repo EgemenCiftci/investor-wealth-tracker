@@ -17,6 +17,8 @@ export class AuthenticationService {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       await updateProfile(currentUser, { displayName: name, photoURL: undefined });
+      await sendEmailVerification(currentUser);
+      await signOut(this.auth);
     } else {
       throw new Error('Current user is null.');
     }
