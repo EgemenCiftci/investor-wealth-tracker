@@ -1,5 +1,5 @@
 export enum AssetTypes {
-    liquid,
-    longTerm,
-    pensionFundsAndSimilar
+    liquid = 'liquid',
+    longTerm = 'longTerm',
+    pensionFundsAndSimilar = 'pensionFundsAndSimilar'
 }

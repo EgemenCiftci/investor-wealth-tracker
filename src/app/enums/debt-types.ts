@@ -1,4 +1,4 @@
 export enum DebtTypes {
-    shortTerm,
-    longTerm
+    shortTerm = 'shortTerm',
+    longTerm = 'longTerm'
 }

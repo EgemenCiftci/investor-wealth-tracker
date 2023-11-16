@@ -13,7 +13,7 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
   styleUrls: ['./entries.component.css']
 })
 export class EntriesComponent {
-  entries: Entry[] = [];
+  entries: Entry[] | undefined = undefined;
   isBusy = false;
 
   constructor(public entriesService: EntriesService,
@@ -25,7 +25,7 @@ export class EntriesComponent {
   async save() {
     try {
       this.isBusy = true;
-      await this.entriesService.setEntries(this.entries);
+      await this.entriesService.setEntries(this.entries ?? []);
       this.snackBarService.showSnackBar('Saved successfully!');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -45,10 +45,13 @@ export class EntriesComponent {
     }
   }
 
-  addEntry(entries: Entry[]) {
+  addEntry() {
     try {
       this.isBusy = true;
-      entries.push(new Entry(this.formatDate(new Date()), [], []))
+      if (!this.entries) {
+        this.entries = [];
+      }
+      this.entries.push(new Entry(this.formatDate(new Date()), [], []))
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -97,8 +100,10 @@ export class EntriesComponent {
   removeEntry(entry: Entry) {
     try {
       this.isBusy = true;
-      const index = this.entries.indexOf(entry);
-      this.entries.splice(index, 1);
+      if (this.entries) {
+        const index = this.entries.indexOf(entry);
+        this.entries.splice(index, 1);
+      }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -109,9 +114,11 @@ export class EntriesComponent {
   removeAsset(entry: Entry, asset: Asset) {
     try {
       this.isBusy = true;
-      const entryIndex = this.entries.indexOf(entry);
-      const assetIndex = entry.assets.indexOf(asset);
-      this.entries[entryIndex].assets.splice(assetIndex, 1);
+      if (this.entries) {
+        const entryIndex = this.entries.indexOf(entry);
+        const assetIndex = entry.assets.indexOf(asset);
+        this.entries[entryIndex].assets.splice(assetIndex, 1);
+      }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -122,9 +129,11 @@ export class EntriesComponent {
   removeDebt(entry: Entry, debt: Debt) {
     try {
       this.isBusy = true;
-      const entryIndex = this.entries.indexOf(entry);
-      const debtIndex = entry.debts.indexOf(debt);
-      this.entries[entryIndex].debts.splice(debtIndex, 1);
+      if (this.entries) {
+        const entryIndex = this.entries.indexOf(entry);
+        const debtIndex = entry.debts.indexOf(debt);
+        this.entries[entryIndex].debts.splice(debtIndex, 1);
+      }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
