@@ -18,13 +18,13 @@
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
-                <button mat-button color="warn" (click)="removeEntry(entry)">
-                    <mat-icon>delete</mat-icon>
-                    <span>Remove Entry</span>
-                </button>
                 <button mat-button (click)="copyAndAddEntry(entry)">
                     <mat-icon>add</mat-icon>
                     <span>Copy & Add Entry</span>
+                </button>
+                <button mat-button color="warn" (click)="removeEntry(entry)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Remove Entry</span>
                 </button>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>

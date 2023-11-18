@@ -9,24 +9,72 @@
         <mat-form-field>
             <input matInput type="email" placeholder="Email" [(ngModel)]="email" required>
         </mat-form-field>
-        <mat-form-field>
-            <input matInput type="password" placeholder="Old Password" [(ngModel)]="oldPassword" required minlength="6">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput type="password" placeholder="New Password" [(ngModel)]="newPassword" required minlength="6">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput type="password" placeholder="New Password Repeat" [(ngModel)]="newPasswordRepeat" required minlength="6">
-        </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
         <button mat-button color="accent" (click)="save()">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
-        <button mat-button color="warn" (click)="cancel()">
-            <mat-icon>cancel</mat-icon>
-            <span>Cancel</span>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Change Password</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input matInput type="password" placeholder="Old Password" #oldPassword required minlength="6">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="password" placeholder="New Password" #newPassword required minlength="6">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="password" placeholder="New Password Repeat" #newPasswordRepeat required
+                minlength="6">
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="accent" (click)="savePassword(oldPassword.value, newPassword.value, newPasswordRepeat.value)">
+            <mat-icon>save</mat-icon>
+            <span>Save</span>
+        </button>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Download My Data</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="accent" (click)="downloadMyData()">
+            <mat-icon>download</mat-icon>
+            <span>Download My Data</span>
+        </button>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Delete All My Data</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input #password matInput type="password" placeholder="Password" required minlength="6">
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="warn" (click)="deleteMyData(password.value)">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
         </button>
     </mat-card-actions>
     <mat-card-footer>

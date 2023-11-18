@@ -15,6 +15,7 @@ import { EntriesComponent } from './components/entries/entries.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { EditComponent } from './components/edit/edit.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,7 +32,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { EditComponent } from './components/edit/edit.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from './components/dialog/dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -41,7 +44,8 @@ import { EditComponent } from './components/edit/edit.component';
     DashboardComponent,
     LoginComponent,
     RegisterComponent,
-    EditComponent
+    EditComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +67,7 @@ import { EditComponent } from './components/edit/edit.component';
     MatMenuModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatDialogModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),

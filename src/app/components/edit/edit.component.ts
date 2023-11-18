@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { EntriesService } from 'src/app/services/entries.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
@@ -12,13 +14,13 @@ export class EditComponent implements OnInit {
   isBusy = false;
   displayName: string | undefined;
   email: string | undefined;
-  oldPassword = '';
-  newPassword = '';
-  newPasswordRepeat = '';
 
   constructor(private snackBarService: SnackBarService,
     private authenticationService: AuthenticationService,
-    private router: Router) {
+    private router: Router,
+    private dialogService: DialogService,
+    private entriesService: EntriesService) {
+    this.entriesService.init();
   }
 
   ngOnInit(): void {
@@ -41,13 +43,9 @@ export class EditComponent implements OnInit {
         return;
       }
 
-      if (this.newPassword !== this.newPasswordRepeat) {
-        this.snackBarService.showSnackBar('Passwords do not match.');
-        return;
-      }
-
       this.isBusy = true;
-      this.authenticationService.updateUser(this.displayName, this.email, this.newPassword);
+      this.authenticationService.updateUser(this.displayName, this.email);
+      this.snackBarService.showSnackBar('Saved successfully.');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -55,10 +53,55 @@ export class EditComponent implements OnInit {
     }
   }
 
-  async cancel() {
+  async savePassword(oldPassword: string, newPassword: string, newPasswordRepeat: string) {
+    try {
+      if (newPassword !== newPasswordRepeat) {
+        this.snackBarService.showSnackBar('Passwords do not match.');
+        return;
+      }
+
+      this.isBusy = true;
+      this.authenticationService.updatePassword(oldPassword, newPassword);
+      this.snackBarService.showSnackBar('Saved successfully.');
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  async downloadMyData() {
     try {
       this.isBusy = true;
-      await this.router.navigate(['/dashboard']);
+      let element = document.createElement('a');
+      const entries = await this.entriesService.getEntries();
+      element.href = window.URL.createObjectURL(new Blob([JSON.stringify(entries)], { type: "application/json" }));
+      element.download = 'data.json';
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  async deleteMyData(password: string) {
+    try {
+      this.isBusy = true;
+      this.dialogService.openDialog('Delete All My Data', 'Your account and your data will be deleted. Do you want to continue?', [
+        {
+          content: 'Cancel', isInitialFocus: false, click: () => { }
+        },
+        {
+          content: 'Ok', isInitialFocus: true, click: async () => {
+            await this.entriesService.deleteUser();
+            await this.authenticationService.deleteUser(password);
+            await this.router.navigate(['/dashboard']);
+          }
+        }]);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {

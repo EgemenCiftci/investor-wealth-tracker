@@ -4,6 +4,7 @@ import { DebtTypes } from 'src/app/enums/debt-types';
 import { Asset } from 'src/app/models/asset';
 import { Debt } from 'src/app/models/debt';
 import { Entry } from 'src/app/models/entry';
+import { DialogService } from 'src/app/services/dialog.service';
 import { EntriesService } from 'src/app/services/entries.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
@@ -17,16 +18,36 @@ export class EntriesComponent {
   isBusy = false;
 
   constructor(public entriesService: EntriesService,
-    private snackBarService: SnackBarService) {
+    private snackBarService: SnackBarService,
+    private dialogService: DialogService) {
     this.entriesService.init();
-    this.cancel();
+    this.load();
   }
 
   async save() {
     try {
       this.isBusy = true;
-      await this.entriesService.setEntries(this.entries ?? []);
-      this.snackBarService.showSnackBar('Saved successfully!');
+      this.dialogService.openDialog('Save', 'All changes will be saved. Do you want to continue?', [
+        {
+          content: 'Cancel', isInitialFocus: false, click: () => { }
+        },
+        {
+          content: 'Ok', isInitialFocus: true, click: async () => {
+            await this.entriesService.setEntries(this.entries ?? []);
+            this.snackBarService.showSnackBar('Saved successfully!');
+          }
+        }]);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  async load() {
+    try {
+      this.isBusy = true;
+      this.entries = await this.entriesService.getEntries();
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -37,7 +58,15 @@ export class EntriesComponent {
   async cancel() {
     try {
       this.isBusy = true;
-      this.entries = await this.entriesService.getEntries();
+      this.dialogService.openDialog('Cancel', 'All changes will be reverted. Do you want to continue?', [
+        {
+          content: 'Cancel', isInitialFocus: false, click: () => { }
+        },
+        {
+          content: 'Ok', isInitialFocus: true, click: async () => {
+            this.entries = await this.entriesService.getEntries();
+          }
+        }]);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {

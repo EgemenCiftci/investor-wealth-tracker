@@ -115,6 +115,16 @@ export class EntriesService {
     }
   }
 
+  async deleteUser() {
+    const currentUser = this.authenticationService.getCurrentUser();
+    if (currentUser) {
+      const usersRef = ref(this.database, `users`);
+      await remove(child(usersRef, currentUser.uid));
+    } else {
+      throw new Error('Current user is null.');
+    }
+  }
+
   getValueSum(array: Asset[] | Debt[] | undefined): number {
     return array?.map(x => x.value).reduce((x, y) => x + y, 0) ?? 0;
   }

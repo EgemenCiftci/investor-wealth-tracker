@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<mat-dialog-content mat-dialog-content>{{data.content}}</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <ng-container *ngFor="let action of data.actions">
+        <button *ngIf="action.isInitialFocus" mat-button mat-dialog-close cdkFocusInitial
+            (click)="click(action)">{{action.content}}</button>
+        <button *ngIf="!action.isInitialFocus" mat-button mat-dialog-close
+            (click)="click(action)">{{action.content}}</button>
+    </ng-container>
+</mat-dialog-actions>

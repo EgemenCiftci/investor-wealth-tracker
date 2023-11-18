@@ -10,19 +10,16 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
 })
 export class LoginComponent {
   isBusy = false;
-  email = '';
-  password = '';
-  isRemember = false;
 
   constructor(private snackBarService: SnackBarService,
     private authenticationService: AuthenticationService,
     private router: Router) {
   }
 
-  async login() {
+  async login(email: string, password: string, isRemember: boolean) {
     try {
       this.isBusy = true;
-      await this.authenticationService.login(this.email, this.password, this.isRemember);
+      await this.authenticationService.login(email, password, isRemember);
       await this.router.navigate(['/dashboard']);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);

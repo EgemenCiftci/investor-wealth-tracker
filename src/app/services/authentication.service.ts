@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
+import { Auth, AuthCredential, EmailAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 @Injectable({
@@ -37,27 +37,38 @@ export class AuthenticationService {
     await signOut(this.auth);
   }
 
-  async deleteUser() {
+  async deleteUser(password: string) {
     const currentUser = this.getCurrentUser();
-    if (currentUser) {
-        await deleteUser(currentUser);
+    if (currentUser?.email) {
+      const credential = EmailAuthProvider.credential(currentUser.email, password);
+      await reauthenticateWithCredential(currentUser, credential);
+      await deleteUser(currentUser);
     } else {
       throw new Error('Current user is null.');
     }
   }
 
-  async updateUser(displayName: string, email: string, password: string) {
+  async updateUser(displayName: string, email: string) {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-        if (currentUser.displayName !== displayName) {
-          await updateProfile(currentUser, { displayName: displayName, photoURL: undefined });
-        }
+      if (currentUser.displayName !== displayName) {
+        await updateProfile(currentUser, { displayName: displayName, photoURL: undefined });
+      }
 
-        if (currentUser.email !== email) {
-          await updateEmail(currentUser, email);
-        }
+      if (currentUser.email !== email) {
+        await updateEmail(currentUser, email);
+      }
+    } else {
+      throw new Error('Current user is null.');
+    }
+  }
 
-        await updatePassword(currentUser, password);
+  async updatePassword(oldPassword: string, newPassword: string) {
+    const currentUser = this.getCurrentUser();
+    if (currentUser?.email) {
+      const credential = EmailAuthProvider.credential(currentUser.email, oldPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPassword);
     } else {
       throw new Error('Current user is null.');
     }
