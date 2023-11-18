@@ -1,17 +1,36 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Edit Profile</mat-card-title>
+        <mat-card-title>Update Display Name</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <mat-form-field>
-            <input matInput type="text" placeholder="Display Name" [(ngModel)]="displayName" required>
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput type="email" placeholder="Email" [(ngModel)]="email" required>
+            <input #displayName0 matInput type="text" placeholder="Display Name" [(ngModel)]="displayName" required>
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="save()">
+        <button mat-button color="accent" (click)="saveDisplayName(displayName0.value)">
+            <mat-icon>save</mat-icon>
+            <span>Save</span>
+        </button>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Update Email</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input #password0 matInput type="password" placeholder="Password" required minlength="6" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field>
+            <input #email0 matInput type="email" placeholder="Email" [(ngModel)]="email" required>
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="accent" (click)="saveEmail(email0.value, password0.value)">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
@@ -26,18 +45,21 @@
     </mat-card-header>
     <mat-card-content>
         <mat-form-field>
-            <input matInput type="password" placeholder="Old Password" #oldPassword required minlength="6">
+            <input matInput type="password" placeholder="Password" #oldPassword required minlength="6"
+                autocomplete="off">
         </mat-form-field>
         <mat-form-field>
-            <input matInput type="password" placeholder="New Password" #newPassword required minlength="6">
+            <input matInput type="password" placeholder="New Password" #newPassword required minlength="6"
+                autocomplete="off">
         </mat-form-field>
         <mat-form-field>
-            <input matInput type="password" placeholder="New Password Repeat" #newPasswordRepeat required
-                minlength="6">
+            <input matInput type="password" placeholder="New Password" #newPasswordRepeat required minlength="6"
+                autocomplete="off">
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="savePassword(oldPassword.value, newPassword.value, newPasswordRepeat.value)">
+        <button mat-button color="accent"
+            (click)="savePassword(oldPassword.value, newPassword.value, newPasswordRepeat.value)">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
@@ -55,7 +77,7 @@
     <mat-card-actions>
         <button mat-button color="accent" (click)="downloadMyData()">
             <mat-icon>download</mat-icon>
-            <span>Download My Data</span>
+            <span>Download</span>
         </button>
     </mat-card-actions>
     <mat-card-footer>
@@ -64,11 +86,11 @@
 </mat-card>
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Delete All My Data</mat-card-title>
+        <mat-card-title>Delete My Data</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <mat-form-field>
-            <input #password matInput type="password" placeholder="Password" required minlength="6">
+            <input #password matInput type="password" placeholder="Password" required minlength="6" autocomplete="off">
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>

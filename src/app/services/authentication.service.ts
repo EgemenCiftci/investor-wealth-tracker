@@ -48,16 +48,25 @@ export class AuthenticationService {
     }
   }
 
-  async updateUser(displayName: string, email: string) {
+  async updateDisplayName(displayName: string) {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       if (currentUser.displayName !== displayName) {
         await updateProfile(currentUser, { displayName: displayName, photoURL: undefined });
       }
+    } else {
+      throw new Error('Current user is null.');
+    }
+  }
 
-      if (currentUser.email !== email) {
-        await updateEmail(currentUser, email);
-      }
+  async updateEmail(email: string, password: string) {
+    const currentUser = this.getCurrentUser();
+    if (currentUser?.email && currentUser.email !== email) {
+      const credential = EmailAuthProvider.credential(currentUser.email, password);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updateEmail(currentUser, email);
+      await sendEmailVerification(currentUser);
+      await signOut(this.auth);
     } else {
       throw new Error('Current user is null.');
     }

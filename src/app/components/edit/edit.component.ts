@@ -31,21 +31,47 @@ export class EditComponent implements OnInit {
     }
   }
 
-  async save() {
+  async saveDisplayName(displayName: string) {
     try {
-      if (!this.displayName) {
+      if (!displayName) {
         this.snackBarService.showSnackBar('Display name is required.');
         return;
       }
+      if (displayName === this.authenticationService.getCurrentUser()?.displayName) {
+        this.snackBarService.showSnackBar('Display name is same as current.');
+        return;
+      }
+      this.isBusy = true;
+      this.authenticationService.updateDisplayName(displayName);
+      this.snackBarService.showSnackBar('Saved successfully.');
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
 
-      if (!this.email) {
+  async saveEmail(email: string, password: string) {
+    try {
+      if (!email) {
         this.snackBarService.showSnackBar('Email is required.');
         return;
       }
-
+      if (email === this.authenticationService.getCurrentUser()?.email) {
+        this.snackBarService.showSnackBar('Email is same as current.');
+        return;
+      }
       this.isBusy = true;
-      this.authenticationService.updateUser(this.displayName, this.email);
-      this.snackBarService.showSnackBar('Saved successfully.');
+      this.dialogService.openDialog('Update Email', 'Your email will be updated with the new one. Do you want to continue?', [
+        {
+          content: 'Cancel', isInitialFocus: false, click: () => { }
+        },
+        {
+          content: 'Ok', isInitialFocus: true, click: async () => {
+            this.authenticationService.updateEmail(email, password);
+            this.snackBarService.showSnackBar('We have sent a verification to your old email. Please check.');
+          }
+        }]);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -55,11 +81,18 @@ export class EditComponent implements OnInit {
 
   async savePassword(oldPassword: string, newPassword: string, newPasswordRepeat: string) {
     try {
-      if (newPassword !== newPasswordRepeat) {
-        this.snackBarService.showSnackBar('Passwords do not match.');
+      if (!oldPassword) {
+        this.snackBarService.showSnackBar('Password is required.');
         return;
       }
-
+      if (!newPassword || !newPasswordRepeat) {
+        this.snackBarService.showSnackBar('New password is required.');
+        return;
+      }
+      if (newPassword !== newPasswordRepeat) {
+        this.snackBarService.showSnackBar('New passwords do not match.');
+        return;
+      }
       this.isBusy = true;
       this.authenticationService.updatePassword(oldPassword, newPassword);
       this.snackBarService.showSnackBar('Saved successfully.');
@@ -91,7 +124,7 @@ export class EditComponent implements OnInit {
   async deleteMyData(password: string) {
     try {
       this.isBusy = true;
-      this.dialogService.openDialog('Delete All My Data', 'Your account and your data will be deleted. Do you want to continue?', [
+      this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?', [
         {
           content: 'Cancel', isInitialFocus: false, click: () => { }
         },
