@@ -20,7 +20,6 @@ export class EntriesComponent {
   constructor(public entriesService: EntriesService,
     private snackBarService: SnackBarService,
     private dialogService: DialogService) {
-    this.entriesService.init();
     this.load();
   }
 

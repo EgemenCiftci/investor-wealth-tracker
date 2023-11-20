@@ -10,8 +10,8 @@ import { EditComponent } from './components/edit/edit.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [authenticationGuard] },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent, canActivate: [authenticationGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [authenticationGuard] },
   { path: 'edit', component: EditComponent, canActivate: [authenticationGuard] },
   { path: 'entries', component: EntriesComponent, canActivate: [authenticationGuard] },
   { path: 'about', component: AboutComponent },

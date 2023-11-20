@@ -14,7 +14,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(private entriesService: EntriesService,
     private snackBarService: SnackBarService) {
-    this.entriesService.init();
   }
 
   async ngOnInit() {

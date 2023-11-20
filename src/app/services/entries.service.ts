@@ -9,110 +9,78 @@ import { Debt } from '../models/debt';
   providedIn: 'root'
 })
 export class EntriesService {
-  private currentUserRef: DatabaseReference | undefined = undefined;
-
   constructor(private database: Database,
     private authenticationService: AuthenticationService) {
   }
 
-  init() {
-    const currentUser = this.authenticationService.getCurrentUser();
-    if (currentUser) {
-      this.currentUserRef = ref(this.database, `users/${currentUser.uid}`);
-    } else {
-      this.currentUserRef = undefined;
-    }
-  }
-
   async getEntries(): Promise<Entry[]> {
-    if (this.currentUserRef) {
-      return (await get(child(this.currentUserRef, "entries"))).val();
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    return (await get(child(currentUserRef, "entries"))).val();
   }
 
   async setEntries(entries: Entry[]) {
-    if (this.currentUserRef) {
-      return await set(child(this.currentUserRef, "entries"), entries);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    return await set(child(currentUserRef, "entries"), entries);
   }
 
   async addEntry(entry: Entry) {
-    if (this.currentUserRef) {
-      const newKey = push(child(this.currentUserRef, `entries`)).key;
-      await set(child(this.currentUserRef, `entries/${newKey}`), entry);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    const newKey = push(child(currentUserRef, `entries`)).key;
+    await set(child(currentUserRef, `entries/${newKey}`), entry);
   }
 
   async updateEntry(entryKey: number, entry: Entry) {
-    if (this.currentUserRef) {
-      await update(child(this.currentUserRef, `entries/${entryKey}`), entry);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await update(child(currentUserRef, `entries/${entryKey}`), entry);
   }
 
   async deleteEntry(entryKey: string) {
-    if (this.currentUserRef) {
-      await remove(child(this.currentUserRef, `entries/${entryKey}`));
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await remove(child(currentUserRef, `entries/${entryKey}`));
   }
 
   async addAsset(entryKey: string, asset: any) {
-    if (this.currentUserRef) {
-      const newKey = push(child(this.currentUserRef, `entries/${entryKey}/assets`)).key;
-      await set(child(this.currentUserRef, `entries/${entryKey}/assets/${newKey}`), asset);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    const newKey = push(child(currentUserRef, `entries/${entryKey}/assets`)).key;
+    await set(child(currentUserRef, `entries/${entryKey}/assets/${newKey}`), asset);
+
   }
 
   async updateAsset(entryKey: string, asset: any) {
-    if (this.currentUserRef) {
-      await update(child(this.currentUserRef, `entries/${entryKey}/assets/${asset.key}`), asset);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await update(child(currentUserRef, `entries/${entryKey}/assets/${asset.key}`), asset);
   }
 
   async deleteAsset(entryKey: string, assetKey: string) {
-    if (this.currentUserRef) {
-      await remove(child(this.currentUserRef, `entries/${entryKey}/assets/${assetKey}`));
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await remove(child(currentUserRef, `entries/${entryKey}/assets/${assetKey}`));
   }
 
   async addDebt(entryKey: string, debt: any) {
-    if (this.currentUserRef) {
-      const newKey = push(child(this.currentUserRef, `entries/${entryKey}/debts`)).key;
-      await set(child(this.currentUserRef, `entries/${entryKey}/debts/${newKey}`), debt);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    const newKey = push(child(currentUserRef, `entries/${entryKey}/debts`)).key;
+    await set(child(currentUserRef, `entries/${entryKey}/debts/${newKey}`), debt);
   }
 
   async updateDebt(entryKey: string, debt: any) {
-    if (this.currentUserRef) {
-      await update(child(this.currentUserRef, `entries/${entryKey}/debts/${debt.key}`), debt);
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await update(child(currentUserRef, `entries/${entryKey}/debts/${debt.key}`), debt);
   }
 
   async deleteDebt(entryKey: string, debtKey: string) {
-    if (this.currentUserRef) {
-      await remove(child(this.currentUserRef, `entries/${entryKey}/debts/${debtKey}`));
-    } else {
-      throw new Error("Entries service is not initialized.");
-    }
+    const currentUser = this.authenticationService.getCurrentUser();
+    const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
+    await remove(child(currentUserRef, `entries/${entryKey}/debts/${debtKey}`));
   }
 
   async deleteUser() {

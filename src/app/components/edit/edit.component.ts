@@ -20,10 +20,9 @@ export class EditComponent implements OnInit {
     private router: Router,
     private dialogService: DialogService,
     private entriesService: EntriesService) {
-    this.entriesService.init();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     const currentUser = this.authenticationService.getCurrentUser();
     if (currentUser) {
       this.displayName = currentUser.displayName ?? undefined;
@@ -42,7 +41,7 @@ export class EditComponent implements OnInit {
         return;
       }
       this.isBusy = true;
-      this.authenticationService.updateDisplayName(displayName);
+      await this.authenticationService.updateDisplayName(displayName);
       this.snackBarService.showSnackBar('Saved successfully.');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -68,7 +67,7 @@ export class EditComponent implements OnInit {
         },
         {
           content: 'Ok', isInitialFocus: true, click: async () => {
-            this.authenticationService.updateEmail(email, password);
+            await this.authenticationService.updateEmail(email, password);
             this.snackBarService.showSnackBar('We have sent a verification to your old email. Please check.');
           }
         }]);
@@ -94,7 +93,7 @@ export class EditComponent implements OnInit {
         return;
       }
       this.isBusy = true;
-      this.authenticationService.updatePassword(oldPassword, newPassword);
+      await this.authenticationService.updatePassword(oldPassword, newPassword);
       this.snackBarService.showSnackBar('Saved successfully.');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);

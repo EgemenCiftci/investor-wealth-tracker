@@ -10,7 +10,7 @@
     <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
       ariaCurrentWhenActive="page">About</button>
     <button mat-mini-fab [matMenuTriggerFor]="menu"
-      [matTooltip]="authenticationService.getCurrentUser()?.displayName ?? ''">{{getUserLetter()}}</button>
+      [matTooltip]="getDisplayName() ?? ''">{{getUserLetter()}}</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login">Login</button>
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/register">Register</button>

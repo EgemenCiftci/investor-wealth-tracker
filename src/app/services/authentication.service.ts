@@ -1,15 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Auth, AuthCredential, EmailAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
+import { Auth, EmailAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  constructor(private auth: Auth) { }
+  private isUserInitialized = false;
+
+  constructor(private auth: Auth) {
+    this.auth.onAuthStateChanged(user => {
+      this.isUserInitialized = true;
+    }, error => console.error(error));
+  }
 
   getCurrentUser(): User | null {
-    return this.auth.currentUser;
+    if (this.isUserInitialized) {
+      return this.auth.currentUser;
+    } else {
+      const userJson = localStorage.getItem('user');
+
+      if (userJson) {
+        return JSON.parse(userJson) as User;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  isLoggedIn() {
+    return this.getCurrentUser()?.emailVerified ?? false;
   }
 
   async register(displayName: string, email: string, password: string) {
@@ -30,11 +50,18 @@ export class AuthenticationService {
     } else {
       await setPersistence(this.auth, inMemoryPersistence);
     }
-    await signInWithEmailAndPassword(this.auth, email, password);
+
+    const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+    const userJson = JSON.stringify(userCredential.user);
+
+    if (isRemember) {
+      localStorage.setItem('user', userJson);
+    }
   }
 
   async logout() {
     await signOut(this.auth);
+    localStorage.removeItem('user');
   }
 
   async deleteUser(password: string) {

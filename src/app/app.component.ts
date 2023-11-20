@@ -18,6 +18,10 @@ export class AppComponent {
   }
 
   getUserLetter() {
-    return this.authenticationService.getCurrentUser()?.displayName?.charAt(0)?.toUpperCase() ?? '?';
+    return this.getDisplayName()?.charAt(0)?.toUpperCase() ?? '?';
+  }
+
+  getDisplayName() {
+    return this.authenticationService.getCurrentUser()?.displayName;
   }
 }

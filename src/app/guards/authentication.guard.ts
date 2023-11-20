@@ -5,11 +5,23 @@ import { inject } from '@angular/core';
 export const authenticationGuard: CanActivateFn = (route, state) => {
   const authenticationService = inject(AuthenticationService);
   const router = inject(Router);
-  const currentUser = authenticationService.getCurrentUser();
-  if (currentUser) {
-    if (currentUser.emailVerified) {
+  let newUrl = state.url;
+  const isLoggedIn = authenticationService.isLoggedIn();
+  if (newUrl === "/login" || newUrl === "/register") {
+    if (isLoggedIn) {
+      router.navigate(['/dashboard']);
+      return false;
+    }
+    else {
       return true;
     }
   }
-  return router.parseUrl('/login');
+  else {
+    if (isLoggedIn) {
+      return true;
+    } else {
+      router.navigate(['/login']);
+      return false;
+    }
+  }
 };
