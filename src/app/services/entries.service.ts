@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
-import { Database, DatabaseReference, child, get, push, ref, remove, set, update } from '@angular/fire/database';
+import { Database, child, get, push, ref, remove, set, update } from '@angular/fire/database';
 import { Entry } from '../models/entry';
 import { Asset } from '../models/asset';
 import { Debt } from '../models/debt';
+import { CurrencyTypes } from '../enums/currency-types';
+import { Rate } from '../models/rate';
 
 @Injectable({
   providedIn: 'root'
@@ -93,19 +95,25 @@ export class EntriesService {
     }
   }
 
-  getValueSum(array: Asset[] | Debt[] | undefined): number {
-    return array?.map(x => x.value).reduce((x, y) => x + y, 0) ?? 0;
-  }
-
   getTotalNetWorth(entry: Entry): number {
-    return this.getValueSum(entry.assets) - this.getValueSum(entry.debts);
+    return this.getTotalAssets(entry) - this.getTotalDebts(entry);
   }
 
   getTotalAssets(entry: Entry): number {
-    return this.getValueSum(entry.assets);
+    let sum = 0;
+    entry.assets.forEach(asset => {
+      const rate = entry.rates.find(r => r.currency === asset.currency)?.value ?? 0;
+      sum += asset.value * rate;
+    });
+    return sum;
   }
 
   getTotalDebts(entry: Entry): number {
-    return this.getValueSum(entry.debts);
+    let sum = 0;
+    entry.debts.forEach(debt => {
+      const rate = entry.rates.find(r => r.currency === debt.currency)?.value ?? 0;
+      sum += debt.value * rate;
+    });
+    return sum;
   }
 }

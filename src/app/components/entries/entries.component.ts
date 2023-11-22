@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { AssetTypes } from 'src/app/enums/asset-types';
+import { CurrencyTypes } from 'src/app/enums/currency-types';
 import { DebtTypes } from 'src/app/enums/debt-types';
 import { Asset } from 'src/app/models/asset';
 import { Debt } from 'src/app/models/debt';
 import { Entry } from 'src/app/models/entry';
+import { Rate } from 'src/app/models/rate';
 import { DialogService } from 'src/app/services/dialog.service';
 import { EntriesService } from 'src/app/services/entries.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
@@ -79,7 +81,7 @@ export class EntriesComponent {
       if (!this.entries) {
         this.entries = [];
       }
-      this.entries.push(new Entry(this.formatDate(new Date()), [], []));
+      this.entries.push(new Entry(this.formatDate(new Date()),[], [], []));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -93,9 +95,10 @@ export class EntriesComponent {
       if (!this.entries) {
         this.entries = [];
       }
-      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value));
-      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value));
-      this.entries.push(new Entry(this.formatDate(new Date()), assets, debts));
+      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currency));
+      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currency));
+      const rates = entry.assets.map(r => new Rate(r.currency, r.value));
+      this.entries.push(new Entry(this.formatDate(new Date()),rates, assets, debts));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -108,7 +111,7 @@ export class EntriesComponent {
       this.isBusy = true;
       if (!entry.assets)
         entry.assets = [];
-      entry.assets.push(new Asset(AssetTypes.liquid, '', 0));
+      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, CurrencyTypes.EUR));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -121,7 +124,20 @@ export class EntriesComponent {
       this.isBusy = true;
       if (!entry.debts)
         entry.debts = [];
-      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0));
+      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, CurrencyTypes.EUR));
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  addRate(entry: Entry) {
+    try {
+      this.isBusy = true;
+      if (!entry.rates)
+        entry.rates = [];
+      entry.rates.push(new Rate(CurrencyTypes.USD, 1));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -177,6 +193,21 @@ export class EntriesComponent {
         const entryIndex = this.entries.indexOf(entry);
         const debtIndex = entry.debts.indexOf(debt);
         this.entries[entryIndex].debts.splice(debtIndex, 1);
+      }
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  removeRate(entry: Entry, rate: Rate) {
+    try {
+      this.isBusy = true;
+      if (this.entries) {
+        const entryIndex = this.entries.indexOf(entry);
+        const rateIndex = entry.rates.indexOf(rate);
+        this.entries[entryIndex].rates.splice(rateIndex, 1);
       }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);

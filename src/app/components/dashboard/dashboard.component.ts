@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
         data: data.map(f => f.x),
       },
       yAxis: {
-        name: 'Wealth (PLN)'
+        name: 'Wealth (USD)'
       },
       series: [
         {
