@@ -99,7 +99,7 @@ export class EntriesService {
     let sum = 0;
     entry.assets?.forEach(asset => {
       const rate = entry.rates.find(r => r.currencyCode === asset.currencyCode)?.value ?? 0;
-      sum += asset.value * rate;
+      sum += asset.value / rate;
     });
     return sum;
   }
@@ -108,7 +108,7 @@ export class EntriesService {
     let sum = 0;
     entry.debts?.forEach(debt => {
       const rate = entry.rates.find(r => r.currencyCode === debt.currencyCode)?.value ?? 0;
-      sum += debt.value * rate;
+      sum += debt.value / rate;
     });
     return sum;
   }

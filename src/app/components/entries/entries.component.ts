@@ -6,9 +6,9 @@ import { Currency } from 'src/app/models/currency';
 import { Debt } from 'src/app/models/debt';
 import { Entry } from 'src/app/models/entry';
 import { Rate } from 'src/app/models/rate';
-import { CurrenciesService } from 'src/app/services/currencies.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { EntriesService } from 'src/app/services/entries.service';
+import { RatesService } from 'src/app/services/rates.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
 
 @Component({
@@ -21,23 +21,25 @@ export class EntriesComponent implements OnInit {
   isBusy = false;
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
+  currencies: Currency[] = [];
   filteredCurrencies: Currency[] = [];
 
   constructor(public entriesService: EntriesService,
-    public currenciesService: CurrenciesService,
+    public ratesService: RatesService,
     private snackBarService: SnackBarService,
     private dialogService: DialogService) {
   }
 
   async ngOnInit() {
     await this.load();
-    this.filteredCurrencies = this.currenciesService.currencies;
+    this.currencies = await this.ratesService.getCurrencies();
+    this.filteredCurrencies = this.currencies;
   }
 
   filter(event: any, entry: Entry) {
     this.updateRates(entry);
     const value = event.target.value;
-    this.filteredCurrencies = this.currenciesService.currencies.filter(c => c.toString().toLowerCase().includes(value.toLowerCase()) );
+    this.filteredCurrencies = this.currencies.filter(c => c.toString().toLowerCase().includes(value.toLowerCase()));
   }
 
   async save() {
@@ -96,11 +98,7 @@ export class EntriesComponent implements OnInit {
       if (!this.entries) {
         this.entries = [];
       }
-      const usdCurrency = this.currenciesService.currencies.find(c => c.code === 'USD');
-      if (!usdCurrency) {
-        throw new Error('USD currency is missing.');
-      }
-      this.entries.push(new Entry(this.formatDate(new Date()), [new Rate(usdCurrency.code, 1)], [], []));
+      this.entries.push(new Entry(this.formatDate(new Date()), [new Rate(this.ratesService.base, 1)], [], []));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -130,7 +128,7 @@ export class EntriesComponent implements OnInit {
       this.isBusy = true;
       if (!entry.assets)
         entry.assets = [];
-      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, 'USD'));
+      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, this.ratesService.base));
       this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -144,7 +142,7 @@ export class EntriesComponent implements OnInit {
       this.isBusy = true;
       if (!entry.debts)
         entry.debts = [];
-      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, 'USD'));
+      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, this.ratesService.base));
       this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -164,7 +162,7 @@ export class EntriesComponent implements OnInit {
       return acc;
     }, debtCurrencyCodes).sort();
 
-    return uniqueCurrencyCodes.map(c => new Rate(c, c === 'USD' ? 1 : 0));
+    return uniqueCurrencyCodes.map(c => new Rate(c, c === this.ratesService.base ? 1 : 0));
   }
 
   onDateChange(event: any, entry: Entry) {
@@ -235,12 +233,13 @@ export class EntriesComponent implements OnInit {
 
     // Remove non-existing rates
     entry.rates.forEach(er => {
-      if (er.currencyCode !== 'USD' && !rates.some(r => er.currencyCode === r.currencyCode)) {
+      if (er.currencyCode !== this.ratesService.base && !rates.some(r => er.currencyCode === r.currencyCode)) {
         const rateIndex = entry.rates.indexOf(er);
         entry.rates.splice(rateIndex, 1);
       }
     });
 
+    // Sort
     entry.rates.sort((a, b) => {
       if (a.currencyCode < b.currencyCode) {
         return -1;
@@ -252,5 +251,26 @@ export class EntriesComponent implements OnInit {
 
       return 0;
     });
+  }
+
+  async fillRates(entry: Entry) {
+    try {
+      this.isBusy = true;
+      const rates = await this.ratesService.getRates(entry.date, entry.rates.filter(r => r.currencyCode !== this.ratesService.base).map(r => r.currencyCode));
+      entry.rates.forEach(er => {
+        const r = rates.find(x => x.currencyCode === er.currencyCode);
+        if (r) {
+          er.value = r.value;
+        }
+      });
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  getCurrency(code: string): Currency {
+    return this.currencies.find(c => c.code === code) ?? new Currency(code, '');
   }
 }

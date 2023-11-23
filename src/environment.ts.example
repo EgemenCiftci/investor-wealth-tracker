@@ -1,12 +1,15 @@
 export const environment = {
     firebaseConfig: {
-        apiKey: "XXX",
-        authDomain: "XXX",
-        databaseURL: "XXX",
-        projectId: "XXX",
-        storageBucket: "XXX",
-        messagingSenderId: "XXX",
-        appId: "XXX",
-        measurementId: "XXX"
+        apiKey: "<YOUR API KEY>",
+        authDomain: "<YOUR AUTH DOMAIN>",
+        databaseURL: "<YOUR DATABASE URL>",
+        projectId: "<YOUR PROJECT ID>",
+        storageBucket: "<YOUR STORAGE BUCKET>",
+        messagingSenderId: "<YOUR ID>",
+        appId: "<YOUR APP ID>",
+        measurementId: "<YOUR MEASUREMENT ID>"
+    },
+    openExchangeRatesConfig: {
+        appId: "<YOUR APP ID>"
     }
 };
