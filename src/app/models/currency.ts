@@ -4,6 +4,6 @@ export class Currency {
     }
 
     toString(): string {
-        return `${this.code} - ${this.name}`;
+        return `${this.code}${this.name ? ' - ' : undefined}${this.name}`;
     }
 }
