@@ -2,10 +2,6 @@ import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { Database, child, get, push, ref, remove, set, update } from '@angular/fire/database';
 import { Entry } from '../models/entry';
-import { Asset } from '../models/asset';
-import { Debt } from '../models/debt';
-import { CurrencyTypes } from '../enums/currency-types';
-import { Rate } from '../models/rate';
 
 @Injectable({
   providedIn: 'root'
@@ -101,8 +97,8 @@ export class EntriesService {
 
   getTotalAssets(entry: Entry): number {
     let sum = 0;
-    entry.assets.forEach(asset => {
-      const rate = entry.rates.find(r => r.currency === asset.currency)?.value ?? 0;
+    entry.assets?.forEach(asset => {
+      const rate = entry.rates.find(r => r.currencyCode === asset.currencyCode)?.value ?? 0;
       sum += asset.value * rate;
     });
     return sum;
@@ -110,8 +106,8 @@ export class EntriesService {
 
   getTotalDebts(entry: Entry): number {
     let sum = 0;
-    entry.debts.forEach(debt => {
-      const rate = entry.rates.find(r => r.currency === debt.currency)?.value ?? 0;
+    entry.debts?.forEach(debt => {
+      const rate = entry.rates.find(r => r.currencyCode === debt.currencyCode)?.value ?? 0;
       sum += debt.value * rate;
     });
     return sum;

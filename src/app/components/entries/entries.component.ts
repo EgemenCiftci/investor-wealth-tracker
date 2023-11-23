@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AssetTypes } from 'src/app/enums/asset-types';
-import { CurrencyTypes } from 'src/app/enums/currency-types';
 import { DebtTypes } from 'src/app/enums/debt-types';
 import { Asset } from 'src/app/models/asset';
+import { Currency } from 'src/app/models/currency';
 import { Debt } from 'src/app/models/debt';
 import { Entry } from 'src/app/models/entry';
 import { Rate } from 'src/app/models/rate';
+import { CurrenciesService } from 'src/app/services/currencies.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { EntriesService } from 'src/app/services/entries.service';
 import { SnackBarService } from 'src/app/services/snack-bar.service';
@@ -15,14 +16,28 @@ import { SnackBarService } from 'src/app/services/snack-bar.service';
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.css']
 })
-export class EntriesComponent {
+export class EntriesComponent implements OnInit {
   entries: Entry[] | undefined = undefined;
   isBusy = false;
+  assetTypes = Object.entries(AssetTypes);
+  debtTypes = Object.entries(DebtTypes);
+  filteredCurrencies: Currency[] = [];
 
   constructor(public entriesService: EntriesService,
+    public currenciesService: CurrenciesService,
     private snackBarService: SnackBarService,
     private dialogService: DialogService) {
-    this.load();
+  }
+
+  async ngOnInit() {
+    await this.load();
+    this.filteredCurrencies = this.currenciesService.currencies;
+  }
+
+  filter(event: any, entry: Entry) {
+    this.updateRates(entry);
+    const value = event.target.value;
+    this.filteredCurrencies = this.currenciesService.currencies.filter(c => c.toString().toLowerCase().includes(value.toLowerCase()) );
   }
 
   async save() {
@@ -81,7 +96,11 @@ export class EntriesComponent {
       if (!this.entries) {
         this.entries = [];
       }
-      this.entries.push(new Entry(this.formatDate(new Date()),[], [], []));
+      const usdCurrency = this.currenciesService.currencies.find(c => c.code === 'USD');
+      if (!usdCurrency) {
+        throw new Error('USD currency is missing.');
+      }
+      this.entries.push(new Entry(this.formatDate(new Date()), [new Rate(usdCurrency.code, 1)], [], []));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -95,10 +114,10 @@ export class EntriesComponent {
       if (!this.entries) {
         this.entries = [];
       }
-      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currency));
-      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currency));
-      const rates = entry.assets.map(r => new Rate(r.currency, r.value));
-      this.entries.push(new Entry(this.formatDate(new Date()),rates, assets, debts));
+      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currencyCode));
+      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currencyCode));
+      const rates = entry.rates.map(r => new Rate(r.currencyCode, r.value));
+      this.entries.push(new Entry(this.formatDate(new Date()), rates, assets, debts));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -111,7 +130,8 @@ export class EntriesComponent {
       this.isBusy = true;
       if (!entry.assets)
         entry.assets = [];
-      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, CurrencyTypes.EUR));
+      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, 'USD'));
+      this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -124,7 +144,8 @@ export class EntriesComponent {
       this.isBusy = true;
       if (!entry.debts)
         entry.debts = [];
-      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, CurrencyTypes.EUR));
+      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, 'USD'));
+      this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -132,24 +153,25 @@ export class EntriesComponent {
     }
   }
 
-  addRate(entry: Entry) {
-    try {
-      this.isBusy = true;
-      if (!entry.rates)
-        entry.rates = [];
-      entry.rates.push(new Rate(CurrencyTypes.USD, 1));
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+  private getRates(entry: Entry): Rate[] {
+    const assetCurrencyCodes = entry.assets.map(a => a.currencyCode);
+    const debtCurrencyCodes = entry.debts.map(d => d.currencyCode);
+    const uniqueCurrencyCodes = assetCurrencyCodes.reduce((acc, item) => {
+      if (!acc.includes(item)) {
+        acc.push(item);
+      }
+
+      return acc;
+    }, debtCurrencyCodes).sort();
+
+    return uniqueCurrencyCodes.map(c => new Rate(c, c === 'USD' ? 1 : 0));
   }
 
   onDateChange(event: any, entry: Entry) {
     entry.date = this.formatDate(event.value);
   }
 
-  formatDate(date: Date): string {
+  private formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -175,9 +197,9 @@ export class EntriesComponent {
     try {
       this.isBusy = true;
       if (this.entries) {
-        const entryIndex = this.entries.indexOf(entry);
         const assetIndex = entry.assets.indexOf(asset);
-        this.entries[entryIndex].assets.splice(assetIndex, 1);
+        entry.assets.splice(assetIndex, 1);
+        this.updateRates(entry);
       }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -190,9 +212,9 @@ export class EntriesComponent {
     try {
       this.isBusy = true;
       if (this.entries) {
-        const entryIndex = this.entries.indexOf(entry);
         const debtIndex = entry.debts.indexOf(debt);
-        this.entries[entryIndex].debts.splice(debtIndex, 1);
+        entry.debts.splice(debtIndex, 1);
+        this.updateRates(entry);
       }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -201,18 +223,34 @@ export class EntriesComponent {
     }
   }
 
-  removeRate(entry: Entry, rate: Rate) {
-    try {
-      this.isBusy = true;
-      if (this.entries) {
-        const entryIndex = this.entries.indexOf(entry);
-        const rateIndex = entry.rates.indexOf(rate);
-        this.entries[entryIndex].rates.splice(rateIndex, 1);
+  updateRates(entry: Entry) {
+    const rates = this.getRates(entry);
+
+    // Add new rates
+    rates.forEach(r => {
+      if (!entry.rates.some(er => er.currencyCode === r.currencyCode)) {
+        entry.rates.push(r);
       }
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+    });
+
+    // Remove non-existing rates
+    entry.rates.forEach(er => {
+      if (er.currencyCode !== 'USD' && !rates.some(r => er.currencyCode === r.currencyCode)) {
+        const rateIndex = entry.rates.indexOf(er);
+        entry.rates.splice(rateIndex, 1);
+      }
+    });
+
+    entry.rates.sort((a, b) => {
+      if (a.currencyCode < b.currencyCode) {
+        return -1;
+      }
+
+      if (a.currencyCode > b.currencyCode) {
+        return 1;
+      }
+
+      return 0;
+    });
   }
 }

@@ -28,35 +28,6 @@
                 </button>
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Rates</mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div *ngFor="let rate of entry.rates">
-                        <mat-form-field>
-                            <mat-label>Currency</mat-label>
-                            <mat-select [(ngModel)]="rate.currency">
-                                <mat-option value="EUR">EUR</mat-option>
-                                <mat-option value="USD">USD</mat-option>
-                                <mat-option value="PLN">PLN</mat-option>
-                                <mat-option value="TRY">TRY</mat-option>
-                                <mat-option value="DOT">DOT</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Value</mat-label>
-                            <input matInput type="number" [(ngModel)]="rate.value" min="0" step="0.001">
-                        </mat-form-field>
-                        <button mat-button color="warn" (click)="removeRate(entry, rate)">
-                            <mat-icon>delete</mat-icon>
-                            <span>Remove Rate</span>
-                        </button>
-                    </div>
-                    <button mat-button (click)="addRate(entry)">
-                        <mat-icon>add</mat-icon>
-                        <span>Add Rate</span>
-                    </button>
-                </mat-expansion-panel>
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
                         <mat-panel-title>Assets</mat-panel-title>
                         <mat-panel-description>Total:
                             {{entriesService.getTotalAssets(entry) | currency}}</mat-panel-description>
@@ -65,9 +36,8 @@
                         <mat-form-field>
                             <mat-label>Type</mat-label>
                             <mat-select [(ngModel)]="asset.type">
-                                <mat-option value="liquid">Liquid</mat-option>
-                                <mat-option value="longTerm">Long Term</mat-option>
-                                <mat-option value="pensionFundsAndSimilar">Pension Funds And Similar</mat-option>
+                                <mat-option *ngFor="let kv of assetTypes" [value]="kv[1]">{{kv[1] |
+                                    camelCaseToSpaces}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
@@ -80,13 +50,15 @@
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
-                            <mat-select [(ngModel)]="asset.currency">
-                                <mat-option value="EUR">EUR</mat-option>
-                                <mat-option value="USD">USD</mat-option>
-                                <mat-option value="PLN">PLN</mat-option>
-                                <mat-option value="TRY">TRY</mat-option>
-                                <mat-option value="DOT">DOT</mat-option>
-                            </mat-select>
+                            <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
+                                [(ngModel)]="asset.currencyCode" (input)="filter($event, entry)"
+                                (focus)="filter($event, entry)">
+                            <mat-autocomplete requireSelection #auto="matAutocomplete">
+                                <mat-option *ngFor="let currency of filteredCurrencies" [value]="currency.code"
+                                    [matTooltip]="currency.name">
+                                    {{currency}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
                         <button mat-button color="warn" (click)="removeAsset(entry, asset)">
                             <mat-icon>delete</mat-icon>
@@ -108,8 +80,8 @@
                         <mat-form-field>
                             <mat-label>Type</mat-label>
                             <mat-select [(ngModel)]="debt.type">
-                                <mat-option value="shortTerm">Short Term</mat-option>
-                                <mat-option value="longTerm">Long Term</mat-option>
+                                <mat-option *ngFor="let kv of debtTypes" [value]="kv[1]">{{kv[1] |
+                                    camelCaseToSpaces}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
@@ -122,13 +94,15 @@
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
-                            <mat-select [(ngModel)]="debt.currency">
-                                <mat-option value="EUR">EUR</mat-option>
-                                <mat-option value="USD">USD</mat-option>
-                                <mat-option value="PLN">PLN</mat-option>
-                                <mat-option value="TRY">TRY</mat-option>
-                                <mat-option value="DOT">DOT</mat-option>
-                            </mat-select>
+                            <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
+                                [(ngModel)]="debt.currencyCode" (input)="filter($event, entry)"
+                                (focus)="filter($event, entry)">
+                            <mat-autocomplete requireSelection #auto="matAutocomplete">
+                                <mat-option *ngFor="let currency of filteredCurrencies" [value]="currency.code"
+                                    [matTooltip]="currency.name">
+                                    {{currency}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
                         <button mat-button color="warn" (click)="removeDebt(entry, debt)">
                             <mat-icon>delete</mat-icon>
@@ -139,6 +113,18 @@
                         <mat-icon>add</mat-icon>
                         <span>Add Debt</span>
                     </button>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Rates</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let rate of entry.rates">
+                        <label>{{rate.currencyCode}}</label>
+                        <mat-form-field>
+                            <mat-label>Value</mat-label>
+                            <input matInput type="number" [(ngModel)]="rate.value" min="0" step="0.001">
+                        </mat-form-field>
+                    </div>
                 </mat-expansion-panel>
             </mat-expansion-panel>
             <button mat-button (click)="addEntry()">

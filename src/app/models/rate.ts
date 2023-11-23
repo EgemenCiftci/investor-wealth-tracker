@@ -1,7 +1,5 @@
-import { CurrencyTypes } from "../enums/currency-types";
-
 export class Rate {
-    constructor(public currency: CurrencyTypes,
+    constructor(public currencyCode: string,
         public value: number) {
     }
 }

@@ -16,6 +16,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { EditComponent } from './components/edit/edit.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { CamelCaseToSpacesPipe } from './pipes/camel-case-to-spaces.pipe';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,8 +35,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DialogComponent } from './components/dialog/dialog.component';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { DialogComponent } from './components/dialog/dialog.component';
     LoginComponent,
     RegisterComponent,
     EditComponent,
-    DialogComponent
+    DialogComponent,
+    CamelCaseToSpacesPipe
   ],
   imports: [
     BrowserModule,
@@ -68,6 +70,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
     MatExpansionModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatAutocompleteModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),
