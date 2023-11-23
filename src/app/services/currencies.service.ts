@@ -5,6 +5,10 @@ import { Currency } from '../models/currency';
   providedIn: 'root'
 })
 export class CurrenciesService {
+  getCurrency(code: string): Currency | undefined {
+    return this.currencies.find(c => c.code === code);
+  }
+
   currencies = [
     new Currency("AED", "UAE Dirham"),
     new Currency("AFN", "Afghani"),
