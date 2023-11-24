@@ -9,8 +9,12 @@
       ariaCurrentWhenActive="page">Entries</button>
     <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
       ariaCurrentWhenActive="page">About</button>
-    <button mat-mini-fab [matMenuTriggerFor]="menu"
-      [matTooltip]="getDisplayName() ?? ''">{{getUserLetter()}}</button>
+    <button mat-mini-fab [matMenuTriggerFor]="menu" [matTooltip]="getDisplayName() ?? ''">
+      <ng-container *ngIf="!photoUrl">
+        {{getUserLetter()}}
+      </ng-container>
+      <img *ngIf="photoUrl" [src]="photoUrl" />
+    </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login">Login</button>
       <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/register">Register</button>

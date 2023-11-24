@@ -19,7 +19,19 @@ export class LoginComponent {
   async login(email: string, password: string, isRemember: boolean) {
     try {
       this.isBusy = true;
-      await this.authenticationService.login(email, password, isRemember);
+      await this.authenticationService.loginWithEmailPassword(email, password, isRemember);
+      await this.router.navigate(['/dashboard']);
+    } catch (error: any) {
+      this.snackBarService.showSnackBar(error);
+    } finally {
+      this.isBusy = false;
+    }
+  }
+
+  async loginWithGoogle(isRemember: boolean) {
+    try {
+      this.isBusy = true;
+      await this.authenticationService.loginWithGoogle(isRemember);
       await this.router.navigate(['/dashboard']);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, EmailAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
+import { Auth, EmailAuthProvider, GoogleAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 @Injectable({
@@ -9,6 +9,7 @@ export class AuthenticationService {
   private isUserInitialized = false;
 
   constructor(private auth: Auth) {
+    this.auth.useDeviceLanguage();
     this.auth.onAuthStateChanged(user => {
       this.isUserInitialized = true;
     }, error => console.error(error));
@@ -44,7 +45,7 @@ export class AuthenticationService {
     }
   }
 
-  async login(email: string, password: string, isRemember: boolean) {
+  async loginWithEmailPassword(email: string, password: string, isRemember: boolean) {
     if (isRemember) {
       await setPersistence(this.auth, browserLocalPersistence);
     } else {
@@ -52,6 +53,22 @@ export class AuthenticationService {
     }
 
     const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+    const userJson = JSON.stringify(userCredential.user);
+
+    if (isRemember) {
+      localStorage.setItem('user', userJson);
+    }
+  }
+
+  async loginWithGoogle(isRemember: boolean) {
+    if (isRemember) {
+      await setPersistence(this.auth, browserLocalPersistence);
+    } else {
+      await setPersistence(this.auth, inMemoryPersistence);
+    }
+
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(this.auth, provider);
     const userJson = JSON.stringify(userCredential.user);
 
     if (isRemember) {

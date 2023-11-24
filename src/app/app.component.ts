@@ -8,8 +8,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  photoUrl?: string;
+
   constructor(public authenticationService: AuthenticationService,
     private router: Router) {
+      this.photoUrl = this.authenticationService.getCurrentUser()?.photoURL ?? undefined;
   }
 
   async logout() {
