@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, EmailAuthProvider, GoogleAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
+import { Auth, EmailAuthProvider, GoogleAuthProvider, User, browserPopupRedirectResolver, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 @Injectable({
