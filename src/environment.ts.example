@@ -7,7 +7,8 @@ export const environment = {
         storageBucket: "<YOUR STORAGE BUCKET>",
         messagingSenderId: "<YOUR ID>",
         appId: "<YOUR APP ID>",
-        measurementId: "<YOUR MEASUREMENT ID>"
+        measurementId: "<YOUR MEASUREMENT ID>",
+        locationId: "<YOUR LOCATION ID>"
     },
     openExchangeRatesConfig: {
         appId: "<YOUR APP ID>"

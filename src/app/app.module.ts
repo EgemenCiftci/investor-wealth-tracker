@@ -38,6 +38,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     RegisterComponent,
     EditComponent,
     DialogComponent,
-    CamelCaseToSpacesPipe
+    CamelCaseToSpacesPipe,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

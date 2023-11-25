@@ -126,4 +126,8 @@ export class AuthenticationService {
       throw new Error('Current user is null.');
     }
   }
+
+  getUserLetter() {
+    return this.getCurrentUser()?.displayName?.charAt(0)?.toUpperCase() ?? '?';
+  }
 }
