@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { number } from 'echarts';
 import { AssetTypes } from 'src/app/enums/asset-types';
 import { DebtTypes } from 'src/app/enums/debt-types';
 import { Asset } from 'src/app/models/asset';
 import { Currency } from 'src/app/models/currency';
 import { Debt } from 'src/app/models/debt';
 import { Entry } from 'src/app/models/entry';
-import { Rate } from 'src/app/models/rate';
 import { DialogService } from 'src/app/services/dialog.service';
 import { EntriesService } from 'src/app/services/entries.service';
 import { RatesService } from 'src/app/services/rates.service';
@@ -98,7 +98,9 @@ export class EntriesComponent implements OnInit {
       if (!this.entries) {
         this.entries = [];
       }
-      this.entries.push(new Entry(this.formatDate(new Date()), [new Rate(this.ratesService.base, 1)], [], []));
+      const rate: any = {};
+      rate[this.ratesService.base] = 1;
+      this.entries.push(new Entry(new Date(), rate, [], []));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -114,8 +116,8 @@ export class EntriesComponent implements OnInit {
       }
       const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currencyCode));
       const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currencyCode));
-      const rates = entry.rates.map(r => new Rate(r.currencyCode, r.value));
-      this.entries.push(new Entry(this.formatDate(new Date()), rates, assets, debts));
+      const rates = { ...entry.rates };
+      this.entries.push(new Entry(new Date(), rates, assets, debts));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -151,7 +153,7 @@ export class EntriesComponent implements OnInit {
     }
   }
 
-  private getRates(entry: Entry): Rate[] {
+  private getCurrencyCodes(entry: Entry): string[] {
     const assetCurrencyCodes = entry.assets.map(a => a.currencyCode);
     const debtCurrencyCodes = entry.debts.map(d => d.currencyCode);
     const uniqueCurrencyCodes = assetCurrencyCodes.reduce((acc, item) => {
@@ -162,19 +164,7 @@ export class EntriesComponent implements OnInit {
       return acc;
     }, debtCurrencyCodes).sort();
 
-    return uniqueCurrencyCodes.map(c => new Rate(c, c === this.ratesService.base ? 1 : 0));
-  }
-
-  onDateChange(event: any, entry: Entry) {
-    entry.date = this.formatDate(event.value);
-  }
-
-  private formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
+    return uniqueCurrencyCodes;
   }
 
   removeEntry(entry: Entry) {
@@ -222,46 +212,29 @@ export class EntriesComponent implements OnInit {
   }
 
   updateRates(entry: Entry) {
-    const rates = this.getRates(entry);
+    const currencyCodes = this.getCurrencyCodes(entry);
 
     // Add new rates
-    rates.forEach(r => {
-      if (!entry.rates.some(er => er.currencyCode === r.currencyCode)) {
-        entry.rates.push(r);
+    currencyCodes.forEach(c => {
+      if (!entry.rates.hasOwnProperty(c)) {
+        entry.rates[c] = c === this.ratesService.base ? 1 : 0;
       }
     });
 
     // Remove non-existing rates
-    entry.rates.forEach(er => {
-      if (er.currencyCode !== this.ratesService.base && !rates.some(r => er.currencyCode === r.currencyCode)) {
-        const rateIndex = entry.rates.indexOf(er);
-        entry.rates.splice(rateIndex, 1);
+    Object.keys(entry.rates).forEach(k => {
+      if (k !== this.ratesService.base && !currencyCodes.some(c => k === c)) {
+        delete entry.rates[k];
       }
-    });
-
-    // Sort
-    entry.rates.sort((a, b) => {
-      if (a.currencyCode < b.currencyCode) {
-        return -1;
-      }
-
-      if (a.currencyCode > b.currencyCode) {
-        return 1;
-      }
-
-      return 0;
     });
   }
 
   async fillRates(entry: Entry) {
     try {
       this.isBusy = true;
-      const rates = await this.ratesService.getRates(entry.date, entry.rates.filter(r => r.currencyCode !== this.ratesService.base).map(r => r.currencyCode));
-      entry.rates.forEach(er => {
-        const r = rates.find(x => x.currencyCode === er.currencyCode);
-        if (r) {
-          er.value = r.value;
-        }
+      const rates = await this.ratesService.getRates(entry.date, Object.keys(entry.rates).filter(k => k !== this.ratesService.base));
+      Object.entries(rates).forEach(e => {
+        entry.rates[e[0]] = e[1];
       });
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
@@ -272,5 +245,9 @@ export class EntriesComponent implements OnInit {
 
   getCurrency(code: string): Currency {
     return this.currencies.find(c => c.code === code) ?? new Currency(code, '');
+  }
+
+  setRate(entry: Entry, key: string, event: Event) {
+    entry.rates[key] = (event.target as any).value;
   }
 }

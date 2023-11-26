@@ -7,14 +7,13 @@
         <mat-accordion>
             <mat-expansion-panel *ngFor="let entry of entries">
                 <mat-expansion-panel-header>
-                    <mat-panel-title>{{entry.date}}</mat-panel-title>
+                    <mat-panel-title>{{entry.date | date: "yyyy-MM-dd"}}</mat-panel-title>
                     <mat-panel-description>Total Net Worth:
                         {{entriesService.getTotalNetWorth(entry) | currency}}</mat-panel-description>
                 </mat-expansion-panel-header>
                 <mat-form-field>
                     <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" [ngModel]="entry.date"
-                        (dateChange)="onDateChange($event, entry)">
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="entry.date">
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -116,11 +115,12 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>Rates</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let rate of entry.rates">
+                    <div *ngFor="let rate of entry.rates | keyvalue">
                         <mat-form-field>
-                            <mat-label>{{getCurrency(rate.currencyCode)}}</mat-label>
-                            <input class="text-align-right" matInput type="number" [(ngModel)]="rate.value" min="0"
-                                step="0.001" [readonly]="rate.currencyCode === ratesService.base">
+                            <mat-label>{{getCurrency(rate.key)}}</mat-label>
+                            <input class="text-align-right" matInput type="number" [ngModel]="rate.value"
+                                (change)="setRate(entry, rate.key, $event)" min="0" inputmode="numeric"
+                                [readonly]="rate.key === ratesService.base">
                         </mat-form-field>
                     </div>
                     <button mat-button (click)="fillRates(entry)">

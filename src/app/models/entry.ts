@@ -1,10 +1,9 @@
 import { Asset } from "./asset";
 import { Debt } from "./debt";
-import { Rate } from "./rate";
 
 export class Entry {
-    constructor(public date: string,
-        public rates: Array<Rate>,
+    constructor(public date: Date,
+        public rates: { [key: string]: number },
         public assets: Array<Asset>,
         public debts: Array<Debt>) {
     }

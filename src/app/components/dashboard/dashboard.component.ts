@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
       },
       xAxis: {
         name: 'Date',
-        data: data.map(f => f.x),
+        data: data.map(f => this.entriesService.formatDate(f.x)),
       },
       yAxis: {
         name: `Wealth (${this.ratesService.base})`
@@ -60,8 +60,8 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  private async getData(): Promise<Array<{ x: string, w: number, a: number, d: number }>> {
-    let data = Array<{ x: string, w: number, a: number, d: number }>();
+  private async getData(): Promise<Array<{ x: Date, w: number, a: number, d: number }>> {
+    let data = Array<{ x: Date, w: number, a: number, d: number }>();
     try {
       this.isBusy = true;
       const entries = await this.entriesService.getEntries();
