@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EntriesComponent } from './entries.component';
-import { EntriesService } from 'src/app/services/entries.service';
-import { RatesService } from 'src/app/services/rates.service';
-import { SnackBarService } from 'src/app/services/snack-bar.service';
-import { DialogService } from 'src/app/services/dialog.service';
+import { EntriesService } from '../../services/entries.service';
+import { RatesService } from '../../services/rates.service';
+import { SnackBarService } from '../../services/snack-bar.service';
+import { DialogService } from '../../services/dialog.service';
 
 describe('EntriesComponent', () => {
   let component: EntriesComponent;

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { number } from 'echarts';
-import { AssetTypes } from 'src/app/enums/asset-types';
-import { DebtTypes } from 'src/app/enums/debt-types';
-import { Asset } from 'src/app/models/asset';
-import { Currency } from 'src/app/models/currency';
-import { Debt } from 'src/app/models/debt';
-import { Entry } from 'src/app/models/entry';
-import { DialogService } from 'src/app/services/dialog.service';
-import { EntriesService } from 'src/app/services/entries.service';
-import { RatesService } from 'src/app/services/rates.service';
-import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { AssetTypes } from '../../enums/asset-types';
+import { DebtTypes } from '../../enums/debt-types';
+import { Asset } from '../../models/asset';
+import { Currency } from '../../models/currency';
+import { Debt } from '../../models/debt';
+import { Entry } from '../../models/entry';
+import { DialogService } from '../../services/dialog.service';
+import { EntriesService } from '../../services/entries.service';
+import { RatesService } from '../../services/rates.service';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 @Component({
   selector: 'app-entries',

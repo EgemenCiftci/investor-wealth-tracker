@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { SnackBarService } from 'src/app/services/snack-bar.service';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+import { SnackBarService } from '../../services/snack-bar.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
 
 describe('LoginComponent', () => {

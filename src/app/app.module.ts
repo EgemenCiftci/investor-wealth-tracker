@@ -9,7 +9,7 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
-import { environment } from 'src/environment';
+import { environment } from '../environment';
 
 import { AppComponent } from './app.component';
 import { AboutComponent } from './components/about/about.component';

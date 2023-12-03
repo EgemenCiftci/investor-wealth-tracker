@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environment';
+import { environment } from '../../environment';
 import { lastValueFrom } from 'rxjs';
 import { Currency } from '../models/currency';
 

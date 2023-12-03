@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
-import { EntriesService } from 'src/app/services/entries.service';
-import { RatesService } from 'src/app/services/rates.service';
-import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { EntriesService } from '../../services/entries.service';
+import { RatesService } from '../../services/rates.service';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;

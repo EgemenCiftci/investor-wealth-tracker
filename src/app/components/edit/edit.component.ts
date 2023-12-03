@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/services/authentication.service';
-import { DialogService } from 'src/app/services/dialog.service';
-import { EntriesService } from 'src/app/services/entries.service';
-import { SnackBarService } from 'src/app/services/snack-bar.service';
+import { AuthenticationService } from '../../services/authentication.service';
+import { DialogService } from '../../services/dialog.service';
+import { EntriesService } from '../../services/entries.service';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 @Component({
   selector: 'app-edit',
