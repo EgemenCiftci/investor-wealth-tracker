@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { number } from 'echarts';
 import { AssetTypes } from '../../enums/asset-types';
 import { DebtTypes } from '../../enums/debt-types';
 import { Asset } from '../../models/asset';
@@ -10,6 +9,9 @@ import { DialogService } from '../../services/dialog.service';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { Store } from '@ngrx/store';
+import { addEntry, copyAndAddEntry, deleteEntry, loadEntriesSuccess } from 'src/app/actions/entries.actions';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-entries',
@@ -17,7 +19,7 @@ import { SnackBarService } from '../../services/snack-bar.service';
   styleUrls: ['./entries.component.css']
 })
 export class EntriesComponent implements OnInit {
-  entries: Entry[] | undefined = undefined;
+  entries$ = this.store.select(state => state.entries);
   isBusy = false;
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
@@ -27,7 +29,8 @@ export class EntriesComponent implements OnInit {
   constructor(public entriesService: EntriesService,
     public ratesService: RatesService,
     private snackBarService: SnackBarService,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    private store: Store<{ entries: Entry[] }>) {
   }
 
   async ngOnInit() {
@@ -51,7 +54,7 @@ export class EntriesComponent implements OnInit {
         },
         {
           content: 'Ok', isInitialFocus: true, click: async () => {
-            await this.entriesService.setEntries(this.entries ?? []);
+            await this.entriesService.setEntries(await lastValueFrom(this.entries$) ?? []);
             this.snackBarService.showSnackBar('Saved successfully!');
           }
         }]);
@@ -65,7 +68,8 @@ export class EntriesComponent implements OnInit {
   async load() {
     try {
       this.isBusy = true;
-      this.entries = await this.entriesService.getEntries();
+      const entries = await this.entriesService.getEntries();
+      this.store.dispatch(loadEntriesSuccess({ entries }));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -82,7 +86,8 @@ export class EntriesComponent implements OnInit {
         },
         {
           content: 'Ok', isInitialFocus: true, click: async () => {
-            this.entries = await this.entriesService.getEntries();
+            const entries = await this.entriesService.getEntries();
+            this.store.dispatch(loadEntriesSuccess({ entries }));
           }
         }]);
     } catch (error: any) {
@@ -95,12 +100,7 @@ export class EntriesComponent implements OnInit {
   addEntry() {
     try {
       this.isBusy = true;
-      if (!this.entries) {
-        this.entries = [];
-      }
-      const rate: any = {};
-      rate[this.ratesService.base] = 1;
-      this.entries.push(new Entry(new Date(), rate, [], []));
+      this.store.dispatch(addEntry({ base: this.ratesService.base }));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -111,13 +111,10 @@ export class EntriesComponent implements OnInit {
   copyAndAddEntry(entry: Entry) {
     try {
       this.isBusy = true;
-      if (!this.entries) {
-        this.entries = [];
-      }
       const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currencyCode));
       const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currencyCode));
       const rates = { ...entry.rates };
-      this.entries.push(new Entry(new Date(), rates, assets, debts));
+      this.store.dispatch(copyAndAddEntry({ entry: new Entry(new Date(), rates, assets, debts) }));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -170,10 +167,7 @@ export class EntriesComponent implements OnInit {
   removeEntry(entry: Entry) {
     try {
       this.isBusy = true;
-      if (this.entries) {
-        const index = this.entries.indexOf(entry);
-        this.entries.splice(index, 1);
-      }
+      this.store.dispatch(deleteEntry({ entryDate: entry.date }));
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -184,11 +178,9 @@ export class EntriesComponent implements OnInit {
   removeAsset(entry: Entry, asset: Asset) {
     try {
       this.isBusy = true;
-      if (this.entries) {
-        const assetIndex = entry.assets.indexOf(asset);
-        entry.assets.splice(assetIndex, 1);
-        this.updateRates(entry);
-      }
+      const assetIndex = entry.assets.indexOf(asset);
+      entry.assets.splice(assetIndex, 1);
+      this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -199,11 +191,9 @@ export class EntriesComponent implements OnInit {
   removeDebt(entry: Entry, debt: Debt) {
     try {
       this.isBusy = true;
-      if (this.entries) {
-        const debtIndex = entry.debts.indexOf(debt);
-        entry.debts.splice(debtIndex, 1);
-        this.updateRates(entry);
-      }
+      const debtIndex = entry.debts.indexOf(debt);
+      entry.debts.splice(debtIndex, 1);
+      this.updateRates(entry);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {

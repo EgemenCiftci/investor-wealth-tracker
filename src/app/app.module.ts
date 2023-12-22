@@ -39,6 +39,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HeaderComponent } from './components/header/header.component';
+import { entriesReducer } from './reducers/entries.reducer';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,7 @@ import { HeaderComponent } from './components/header/header.component';
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({ entries: entriesReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,28 +1,28 @@
 <mat-toolbar color="primary">
-    <mat-icon style="margin-right: 10px;">payments</mat-icon>
+    <mat-icon class="icon">payments</mat-icon>
     <span>Investor Wealth Tracker</span>
     <span class="spacer"></span>
     <nav>
         <button mat-flat-button color="primary" routerLink="/" routerLinkActive="active"
-            ariaCurrentWhenActive="page">Dashboard</button>
+            ariaCurrentWhenActive="page" type="button">Dashboard</button>
         <button mat-flat-button color="primary" routerLink="/entries" routerLinkActive="active"
-            ariaCurrentWhenActive="page">Entries</button>
+            ariaCurrentWhenActive="page" type="button">Entries</button>
         <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
-            ariaCurrentWhenActive="page">About</button>
+            ariaCurrentWhenActive="page" type="button">About</button>
         <button mat-mini-fab [matMenuTriggerFor]="menu"
-            [matTooltip]="authenticationService.getCurrentUser()?.displayName ?? ''">
+            [matTooltip]="authenticationService.getCurrentUser()?.displayName ?? ''" type="button">
             <ng-container *ngIf="!photoUrl">
                 {{authenticationService.getUserLetter()}}
             </ng-container>
-            <img *ngIf="photoUrl" [src]="photoUrl" />
+            <img *ngIf="photoUrl" [src]="photoUrl" title="photo"/>
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login">Login</button>
+            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login" type="button">Login</button>
             <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()"
-                routerLink="/register">Register</button>
-            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" routerLink="/edit">Edit
+                routerLink="/register" type="button">Register</button>
+            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" routerLink="/edit" type="button">Edit
                 Profile</button>
-            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" (click)="logout()">Logout</button>
+            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" (click)="logout()" type="button">Logout</button>
         </mat-menu>
     </nav>
 </mat-toolbar>

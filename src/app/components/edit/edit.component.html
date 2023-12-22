@@ -8,7 +8,7 @@
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="saveDisplayName(displayName0.value)">
+        <button mat-button color="accent" (click)="saveDisplayName(displayName0.value)" type="button">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
@@ -30,7 +30,7 @@
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="saveEmail(email0.value, password0.value)">
+        <button mat-button color="accent" (click)="saveEmail(email0.value, password0.value)" type="button">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
@@ -59,7 +59,7 @@
     </mat-card-content>
     <mat-card-actions>
         <button mat-button color="accent"
-            (click)="savePassword(oldPassword.value, newPassword.value, newPasswordRepeat.value)">
+            (click)="savePassword(oldPassword.value, newPassword.value, newPasswordRepeat.value)" type="button">
             <mat-icon>save</mat-icon>
             <span>Save</span>
         </button>
@@ -75,7 +75,7 @@
     <mat-card-content>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="accent" (click)="downloadMyData()">
+        <button mat-button color="accent" (click)="downloadMyData()" type="button">
             <mat-icon>download</mat-icon>
             <span>Download</span>
         </button>
@@ -94,7 +94,7 @@
         </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button color="warn" (click)="deleteMyData(password.value)">
+        <button mat-button color="warn" (click)="deleteMyData(password.value)" type="button">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
         </button>

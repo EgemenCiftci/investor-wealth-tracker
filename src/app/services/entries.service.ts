@@ -15,7 +15,7 @@ export class EntriesService {
   async getEntries(): Promise<Entry[]> {
     const currentUser = this.authenticationService.getCurrentUser();
     const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
-    const entries = (await get(child(currentUserRef, "entries"))).val();
+    const entries = (await get(child(currentUserRef, 'entries'))).val();
     return Object.entries(entries).map(([key, value]: [string, any]) => new Entry(new Date(key), value.rates, value.assets, value.debts));
   }
 
@@ -27,7 +27,7 @@ export class EntriesService {
       const key = this.formatDate(e.date);
       entries0[key] = { assets: e.assets, debts: e.debts, rates: e.rates };
     });
-    return await set(child(currentUserRef, "entries"), entries0);
+    return await set(child(currentUserRef, 'entries'), entries0);
   }
 
   async deleteUser() {

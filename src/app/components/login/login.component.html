@@ -12,11 +12,11 @@
         <mat-checkbox #isRemember>Remember me</mat-checkbox>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="login(email.value, password.value, isRemember.checked)">
+        <button mat-button (click)="login(email.value, password.value, isRemember.checked)" type="button">
             <mat-icon>login</mat-icon>
             <span>Login with Email & Password</span>
         </button>
-        <button mat-button (click)="loginWithGoogle(isRemember.checked)">
+        <button mat-button (click)="loginWithGoogle(isRemember.checked)" type="button">
             <mat-icon>login</mat-icon>
             <span>Login with Google</span>
         </button>

@@ -3,6 +3,8 @@ import { EChartsOption } from 'echarts';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { Store, select } from '@ngrx/store';
+import { loadEntriesSuccess } from 'src/app/actions/entries.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +17,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(private entriesService: EntriesService,
     private ratesService: RatesService,
-    private snackBarService: SnackBarService) {
+    private snackBarService: SnackBarService, 
+    private store: Store) {
   }
 
   async ngOnInit() {
@@ -65,6 +68,7 @@ export class DashboardComponent implements OnInit {
     try {
       this.isBusy = true;
       const entries = await this.entriesService.getEntries();
+      this.store.dispatch(loadEntriesSuccess({entries}));
       if (entries) {
         data = entries.map(entry => ({
           x: entry.date,
