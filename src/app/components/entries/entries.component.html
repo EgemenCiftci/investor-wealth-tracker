@@ -9,7 +9,7 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title>{{entry.date | date: "yyyy-MM-dd"}}</mat-panel-title>
                     <mat-panel-description>Total Net Worth:
-                        {{entriesService.getTotalNetWorth(entry) | currency}}</mat-panel-description>
+                        {{entry | total: "w" | currency}}</mat-panel-description>
                 </mat-expansion-panel-header>
                 <mat-form-field>
                     <mat-label>Date</mat-label>
@@ -29,9 +29,9 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>Assets</mat-panel-title>
                         <mat-panel-description>Total:
-                            {{entriesService.getTotalAssets(entry) | currency}}</mat-panel-description>
+                            {{entry | total: "a" | currency}}</mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let asset of entry.assets">
+                    <div *ngFor="let asset of entry.assets; let i = index">
                         <mat-form-field>
                             <mat-label>Type</mat-label>
                             <mat-select [(ngModel)]="asset.type">
@@ -51,15 +51,15 @@
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
                             <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
-                                [(ngModel)]="asset.currencyCode" (input)="filter($event, entry)"
-                                (focus)="filter($event, entry)">
+                                [(ngModel)]="asset.currencyCode" (input)="filter($event)"
+                                (focus)="filter($event)">
                             <mat-autocomplete requireSelection #auto="matAutocomplete">
-                                <mat-option *ngFor="let currency of filteredCurrencies" [value]="currency.code">
+                                <mat-option *ngFor="let currency of filteredCurrencies$ | async" [value]="currency.code">
                                     {{currency}}
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
-                        <button mat-button color="warn" (click)="removeAsset(entry, asset)" type="button">
+                        <button mat-button color="warn" (click)="removeAsset(entry, i)" type="button">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Asset</span>
                         </button>
@@ -73,9 +73,9 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>Debts</mat-panel-title>
                         <mat-panel-description>Total:
-                            {{entriesService.getTotalDebts(entry) | currency}}</mat-panel-description>
+                            {{entry | total: "d" | currency}}</mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let debt of entry.debts">
+                    <div *ngFor="let debt of entry.debts; let i = index">
                         <mat-form-field>
                             <mat-label>Type</mat-label>
                             <mat-select [(ngModel)]="debt.type">
@@ -95,15 +95,15 @@
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
                             <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
-                                [(ngModel)]="debt.currencyCode" (input)="filter($event, entry)"
-                                (focus)="filter($event, entry)">
+                                [(ngModel)]="debt.currencyCode" (input)="filter($event)"
+                                (focus)="filter($event)">
                             <mat-autocomplete requireSelection #auto="matAutocomplete">
-                                <mat-option *ngFor="let currency of filteredCurrencies" [value]="currency.code">
+                                <mat-option *ngFor="let currency of filteredCurrencies$ | async" [value]="currency.code">
                                     {{currency}}
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
-                        <button mat-button color="warn" (click)="removeDebt(entry, debt)" type="button">
+                        <button mat-button color="warn" (click)="removeDebt(entry, i)" type="button">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Debt</span>
                         </button>
@@ -119,7 +119,7 @@
                     </mat-expansion-panel-header>
                     <div *ngFor="let rate of entry.rates | keyvalue">
                         <mat-form-field>
-                            <mat-label>{{getCurrency(rate.key)}}</mat-label>
+                            <mat-label>{{getCurrency(rate.key) | async}}</mat-label>
                             <input class="text-align-right" matInput type="number" [ngModel]="rate.value"
                                 (change)="setRate(entry, rate.key, $event)" min="0" inputmode="numeric"
                                 [readonly]="rate.key === ratesService.base" title="rate">
@@ -148,6 +148,6 @@
         </button>
     </mat-card-actions>
     <mat-card-footer>
-        <mat-progress-bar [mode]="isBusy ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+        <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
     </mat-card-footer>
 </mat-card>

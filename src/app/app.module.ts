@@ -40,6 +40,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HeaderComponent } from './components/header/header.component';
 import { entriesReducer } from './reducers/entries.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { EntriesEffects } from './effects/entries.effects';
+import { TotalPipe } from './pipes/total.pipe';
 
 @NgModule({
   declarations: [
@@ -52,7 +55,8 @@ import { entriesReducer } from './reducers/entries.reducer';
     EditComponent,
     DialogComponent,
     CamelCaseToSpacesPipe,
-    HeaderComponent
+    HeaderComponent,
+    TotalPipe
   ],
   imports: [
     BrowserModule,
@@ -83,7 +87,8 @@ import { entriesReducer } from './reducers/entries.reducer';
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
-    StoreModule.forRoot({ entries: entriesReducer })
+    StoreModule.forRoot({ entriesState: entriesReducer}),
+    EffectsModule.forRoot([EntriesEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -13,14 +13,14 @@ export class RatesService {
   constructor(private httpClient: HttpClient) {
   }
 
-  async getRates(date: Date, currencyCodes: string[]): Promise<{[key: string]:number}> {
+  async getRates(date: Date, currencyCodes: string[]): Promise<{ [key: string]: number }> {
     const dateString = this.formatDate(date);
     const appId = environment.openExchangeRatesConfig.appId;
     const symbols = currencyCodes.join(',');
     const showAlternative = true;
     const url = `https://openexchangerates.org/api/historical/${dateString}.json?app_id=${appId}&base=${this.base}&symbols=${symbols}&show_alternative=${showAlternative}`;
     const response = (await lastValueFrom(this.httpClient.get(url))) as any;
-    return response.rates as {[key: string]:number};
+    return response.rates as { [key: string]: number };
   }
 
   async getCurrencies(): Promise<Currency[]> {

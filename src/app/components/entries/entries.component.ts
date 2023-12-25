@@ -1,243 +1,92 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetTypes } from '../../enums/asset-types';
 import { DebtTypes } from '../../enums/debt-types';
-import { Asset } from '../../models/asset';
 import { Currency } from '../../models/currency';
-import { Debt } from '../../models/debt';
 import { Entry } from '../../models/entry';
-import { DialogService } from '../../services/dialog.service';
-import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
-import { SnackBarService } from '../../services/snack-bar.service';
 import { Store } from '@ngrx/store';
-import { addEntry, copyAndAddEntry, deleteEntry, loadEntriesSuccess } from 'src/app/actions/entries.actions';
-import { lastValueFrom } from 'rxjs';
+import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies } from 'src/app/actions/entries.actions';
+import { Observable, Subject, map } from 'rxjs';
+import { AppStore } from 'src/app/reducers/entries.reducer';
 
 @Component({
   selector: 'app-entries',
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.css']
 })
-export class EntriesComponent implements OnInit {
-  entries$ = this.store.select(state => state.entries);
-  isBusy = false;
+export class EntriesComponent implements OnInit, OnDestroy {
+  entries$ = this.store.select(state => state.entriesState.entries);
+  isBusy$ = this.store.select(state => state.entriesState.isBusy);
+  currencies$ = this.store.select(state => state.entriesState.currencies);
+  filteredCurrencies$ = this.store.select(state => state.entriesState.filteredCurrencies);
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
-  currencies: Currency[] = [];
-  filteredCurrencies: Currency[] = [];
+  private _unsubscribe$ = new Subject<void>();
 
-  constructor(public entriesService: EntriesService,
-    public ratesService: RatesService,
-    private snackBarService: SnackBarService,
-    private dialogService: DialogService,
-    private store: Store<{ entries: Entry[] }>) {
+  constructor(
+    public ratesService: RatesService, 
+    private store: Store<AppStore>) {
   }
 
-  async ngOnInit() {
-    await this.load();
-    this.currencies = await this.ratesService.getCurrencies();
-    this.filteredCurrencies = this.currencies;
+  ngOnInit() {
+    this.store.dispatch(loadData());
   }
 
-  filter(event: any, entry: Entry) {
-    this.updateRates(entry);
+  ngOnDestroy() {
+    this._unsubscribe$.next();
+    this._unsubscribe$.complete();
+  }
+
+  filter(event: any) {
     const value = event.target.value;
-    this.filteredCurrencies = this.currencies.filter(c => c.toString().toLowerCase().includes(value.toLowerCase()));
+    this.store.dispatch(filterCurrencies({ value }));
   }
 
-  async save() {
-    try {
-      this.isBusy = true;
-      this.dialogService.openDialog('Save', 'All changes will be saved. Do you want to continue?', [
-        {
-          content: 'Cancel', isInitialFocus: false, click: () => { }
-        },
-        {
-          content: 'Ok', isInitialFocus: true, click: async () => {
-            await this.entriesService.setEntries(await lastValueFrom(this.entries$) ?? []);
-            this.snackBarService.showSnackBar('Saved successfully!');
-          }
-        }]);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+  save() {
+    this.store.dispatch(saveEntries());
   }
 
-  async load() {
-    try {
-      this.isBusy = true;
-      const entries = await this.entriesService.getEntries();
-      this.store.dispatch(loadEntriesSuccess({ entries }));
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
-  }
-
-  async cancel() {
-    try {
-      this.isBusy = true;
-      this.dialogService.openDialog('Cancel', 'All changes will be reverted. Do you want to continue?', [
-        {
-          content: 'Cancel', isInitialFocus: false, click: () => { }
-        },
-        {
-          content: 'Ok', isInitialFocus: true, click: async () => {
-            const entries = await this.entriesService.getEntries();
-            this.store.dispatch(loadEntriesSuccess({ entries }));
-          }
-        }]);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+  cancel() {
+    this.store.dispatch(cancelEntries());
   }
 
   addEntry() {
-    try {
-      this.isBusy = true;
-      this.store.dispatch(addEntry({ base: this.ratesService.base }));
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+    this.store.dispatch(addEntry({ base: this.ratesService.base }));
   }
 
   copyAndAddEntry(entry: Entry) {
-    try {
-      this.isBusy = true;
-      const assets = entry.assets.map(a => new Asset(a.type, a.name, a.value, a.currencyCode));
-      const debts = entry.debts.map(d => new Debt(d.type, d.name, d.value, d.currencyCode));
-      const rates = { ...entry.rates };
-      this.store.dispatch(copyAndAddEntry({ entry: new Entry(new Date(), rates, assets, debts) }));
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+    this.store.dispatch(copyAndAddEntry({ entryDate: entry.date }));
   }
 
   addAsset(entry: Entry) {
-    try {
-      this.isBusy = true;
-      if (!entry.assets)
-        entry.assets = [];
-      entry.assets.push(new Asset(AssetTypes.liquid, '', 0, this.ratesService.base));
-      this.updateRates(entry);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+    this.store.dispatch(addAsset({ entryDate: entry.date, base: this.ratesService.base }));
   }
 
   addDebt(entry: Entry) {
-    try {
-      this.isBusy = true;
-      if (!entry.debts)
-        entry.debts = [];
-      entry.debts.push(new Debt(DebtTypes.shortTerm, '', 0, this.ratesService.base));
-      this.updateRates(entry);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
-  }
-
-  private getCurrencyCodes(entry: Entry): string[] {
-    const assetCurrencyCodes = entry.assets.map(a => a.currencyCode);
-    const debtCurrencyCodes = entry.debts.map(d => d.currencyCode);
-    const uniqueCurrencyCodes = assetCurrencyCodes.reduce((acc, item) => {
-      if (!acc.includes(item)) {
-        acc.push(item);
-      }
-
-      return acc;
-    }, debtCurrencyCodes).sort();
-
-    return uniqueCurrencyCodes;
+    this.store.dispatch(addDebt({ entryDate: entry.date, base: this.ratesService.base }));
   }
 
   removeEntry(entry: Entry) {
-    try {
-      this.isBusy = true;
-      this.store.dispatch(deleteEntry({ entryDate: entry.date }));
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+      this.store.dispatch(removeEntry({ entryDate: entry.date }));
   }
 
-  removeAsset(entry: Entry, asset: Asset) {
-    try {
-      this.isBusy = true;
-      const assetIndex = entry.assets.indexOf(asset);
-      entry.assets.splice(assetIndex, 1);
-      this.updateRates(entry);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+  removeAsset(entry: Entry, assetIndex: number) {
+    this.store.dispatch(removeAsset({ entryDate: entry.date, assetIndex, base: this.ratesService.base }));
   }
 
-  removeDebt(entry: Entry, debt: Debt) {
-    try {
-      this.isBusy = true;
-      const debtIndex = entry.debts.indexOf(debt);
-      entry.debts.splice(debtIndex, 1);
-      this.updateRates(entry);
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
+  removeDebt(entry: Entry, debtIndex: number) {
+    this.store.dispatch(removeDebt({ entryDate: entry.date, debtIndex, base: this.ratesService.base }));
   }
 
-  updateRates(entry: Entry) {
-    const currencyCodes = this.getCurrencyCodes(entry);
-
-    // Add new rates
-    currencyCodes.forEach(c => {
-      if (!entry.rates.hasOwnProperty(c)) {
-        entry.rates[c] = c === this.ratesService.base ? 1 : 0;
-      }
-    });
-
-    // Remove non-existing rates
-    Object.keys(entry.rates).forEach(k => {
-      if (k !== this.ratesService.base && !currencyCodes.some(c => k === c)) {
-        delete entry.rates[k];
-      }
-    });
+  fillRates(entry: Entry) {
+    this.store.dispatch(fillRates({ entryDate: entry.date, entryRatesKeys: Object.keys(entry.rates) }));
   }
 
-  async fillRates(entry: Entry) {
-    try {
-      this.isBusy = true;
-      const rates = await this.ratesService.getRates(entry.date, Object.keys(entry.rates).filter(k => k !== this.ratesService.base));
-      Object.entries(rates).forEach(e => {
-        entry.rates[e[0]] = e[1];
-      });
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-    }
-  }
-
-  getCurrency(code: string): Currency {
-    return this.currencies.find(c => c.code === code) ?? new Currency(code, '');
+  getCurrency(code: string): Observable<Currency> {
+    return this.currencies$.pipe(map(currencies => currencies.find(currency => currency.code === code) ?? new Currency(code, '')));
   }
 
   setRate(entry: Entry, key: string, event: Event) {
-    entry.rates[key] = (event.target as any).value;
+    this.store.dispatch(setRate({ entryDate: entry.date, rateKey: key, rateValue: (event.target as any).value }));
   }
 }

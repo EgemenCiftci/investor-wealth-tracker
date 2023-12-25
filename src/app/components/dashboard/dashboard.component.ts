@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
-import { SnackBarService } from '../../services/snack-bar.service';
-import { Store, select } from '@ngrx/store';
-import { loadEntriesSuccess } from 'src/app/actions/entries.actions';
+import { Store } from '@ngrx/store';
+import { loadData } from 'src/app/actions/entries.actions';
+import { Observable, map } from 'rxjs';
+import { Entry } from 'src/app/models/entry';
+import { AppStore } from 'src/app/reducers/entries.reducer';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,19 +14,36 @@ import { loadEntriesSuccess } from 'src/app/actions/entries.actions';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  isBusy = false;
-  options!: EChartsOption;
+  options$: Observable<EChartsOption> = this.store.select(state => state.entriesState.entries).pipe(
+    map(entries => this.getData(entries)),
+    map(data => this.getOptions(data)));
+  isBusy$ = this.store.select(state => state.entriesState.isBusy);
 
   constructor(private entriesService: EntriesService,
     private ratesService: RatesService,
-    private snackBarService: SnackBarService, 
-    private store: Store) {
+    private store: Store<AppStore>) {
   }
 
-  async ngOnInit() {
-    const data = await this.getData();
+  ngOnInit() {
+    this.store.dispatch(loadData());
+  }
 
-    this.options = {
+  private getData(entries: Entry[]): ({ x: Date, w: number, a: number, d: number })[] {
+    console.log(entries);
+    if (!Array.isArray(entries)) {
+      return [];
+    }
+
+    return entries?.map(entry => ({
+      x: entry.date,
+      w: this.entriesService.getTotalNetWorth(entry),
+      a: this.entriesService.getTotalAssets(entry),
+      d: this.entriesService.getTotalDebts(entry)
+    }));
+  }
+
+  private getOptions(data: { x: Date, w: number, a: number, d: number }[]): EChartsOption {
+    return {
       tooltip: {},
       legend: {
         show: true,
@@ -34,7 +53,7 @@ export class DashboardComponent implements OnInit {
       },
       xAxis: {
         name: 'Date',
-        data: data.map(f => this.entriesService.formatDate(f.x)),
+        data: data?.map(f => this.entriesService.formatDate(f.x)),
       },
       yAxis: {
         name: `Wealth (${this.ratesService.base})`
@@ -44,44 +63,22 @@ export class DashboardComponent implements OnInit {
           name: 'Total Wealth',
           type: 'line',
           color: 'blue',
-          data: data.map(f => f.w),
+          data: data?.map(f => f.w),
         },
         {
           name: 'Assets',
           type: 'line',
           color: 'green',
-          data: data.map(f => f.a),
+          data: data?.map(f => f.a),
         },
         {
           name: 'Debts',
           type: 'line',
           color: 'red',
-          data: data.map(f => f.d),
+          data: data?.map(f => f.d),
         }
       ],
       animationEasing: 'elasticOut',
     };
-  }
-
-  private async getData(): Promise<Array<{ x: Date, w: number, a: number, d: number }>> {
-    let data = Array<{ x: Date, w: number, a: number, d: number }>();
-    try {
-      this.isBusy = true;
-      const entries = await this.entriesService.getEntries();
-      this.store.dispatch(loadEntriesSuccess({entries}));
-      if (entries) {
-        data = entries.map(entry => ({
-          x: entry.date,
-          w: this.entriesService.getTotalNetWorth(entry),
-          a: this.entriesService.getTotalAssets(entry),
-          d: this.entriesService.getTotalDebts(entry)
-        }));
-      }
-    } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
-    } finally {
-      this.isBusy = false;
-      return data;
-    }
   }
 }

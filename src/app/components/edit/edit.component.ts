@@ -4,6 +4,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { DialogService } from '../../services/dialog.service';
 import { EntriesService } from '../../services/entries.service';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-edit',
@@ -61,16 +62,11 @@ export class EditComponent implements OnInit {
         return;
       }
       this.isBusy = true;
-      this.dialogService.openDialog('Update Email', 'Your email will be updated with the new one. Do you want to continue?', [
-        {
-          content: 'Cancel', isInitialFocus: false, click: () => { }
-        },
-        {
-          content: 'Ok', isInitialFocus: true, click: async () => {
-            await this.authenticationService.updateEmail(email, password);
-            this.snackBarService.showSnackBar('We have sent a verification to your old email. Please check.');
-          }
-        }]);
+      const result = await lastValueFrom(this.dialogService.openDialog('Update Email', 'Your email will be updated with the new one. Do you want to continue?').afterClosed());
+      if (result) {
+        await this.authenticationService.updateEmail(email, password);
+        this.snackBarService.showSnackBar('We have sent a verification to your old email. Please check.');
+      }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -123,17 +119,12 @@ export class EditComponent implements OnInit {
   async deleteMyData(password: string) {
     try {
       this.isBusy = true;
-      this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?', [
-        {
-          content: 'Cancel', isInitialFocus: false, click: () => { }
-        },
-        {
-          content: 'Ok', isInitialFocus: true, click: async () => {
-            await this.entriesService.deleteUser();
-            await this.authenticationService.deleteUser(password);
-            await this.router.navigate(['/dashboard']);
-          }
-        }]);
+      const result = await lastValueFrom(this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?').afterClosed());
+      if (result) {
+        await this.entriesService.deleteUser();
+        await this.authenticationService.deleteUser(password);
+        await this.router.navigate(['/dashboard']);
+      }
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
