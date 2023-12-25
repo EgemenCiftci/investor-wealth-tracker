@@ -43,6 +43,7 @@ import { entriesReducer } from './reducers/entries.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { EntriesEffects } from './effects/entries.effects';
 import { TotalPipe } from './pipes/total.pipe';
+import { progressReducer } from './reducers/progress.reducer';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,7 @@ import { TotalPipe } from './pipes/total.pipe';
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
-    StoreModule.forRoot({ entriesState: entriesReducer}),
+    StoreModule.forRoot({ entriesReducer, progressReducer }),
     EffectsModule.forRoot([EntriesEffects])
   ],
   providers: [],

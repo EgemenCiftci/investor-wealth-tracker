@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { loadData } from 'src/app/actions/entries.actions';
 import { Observable, map } from 'rxjs';
 import { Entry } from 'src/app/models/entry';
-import { AppStore } from 'src/app/reducers/entries.reducer';
+import { AppState } from 'src/app/reducers/entries.reducer';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,14 +14,14 @@ import { AppStore } from 'src/app/reducers/entries.reducer';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  options$: Observable<EChartsOption> = this.store.select(state => state.entriesState.entries).pipe(
+  options$: Observable<EChartsOption> = this.store.select(x => x.entriesReducer.entries).pipe(
     map(entries => this.getData(entries)),
     map(data => this.getOptions(data)));
-  isBusy$ = this.store.select(state => state.entriesState.isBusy);
+  isBusy$ = this.store.select(x => x.progressReducer.isBusy);
 
   constructor(private entriesService: EntriesService,
     private ratesService: RatesService,
-    private store: Store<AppStore>) {
+    private store: Store<AppState>) {
   }
 
   ngOnInit() {

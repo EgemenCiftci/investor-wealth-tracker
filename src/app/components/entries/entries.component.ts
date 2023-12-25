@@ -7,7 +7,7 @@ import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
 import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies } from 'src/app/actions/entries.actions';
 import { Observable, Subject, map } from 'rxjs';
-import { AppStore } from 'src/app/reducers/entries.reducer';
+import { AppState } from 'src/app/reducers/entries.reducer';
 
 @Component({
   selector: 'app-entries',
@@ -15,17 +15,17 @@ import { AppStore } from 'src/app/reducers/entries.reducer';
   styleUrls: ['./entries.component.css']
 })
 export class EntriesComponent implements OnInit, OnDestroy {
-  entries$ = this.store.select(state => state.entriesState.entries);
-  isBusy$ = this.store.select(state => state.entriesState.isBusy);
-  currencies$ = this.store.select(state => state.entriesState.currencies);
-  filteredCurrencies$ = this.store.select(state => state.entriesState.filteredCurrencies);
+  entries$ = this.store.select(x => x.entriesReducer.entries);
+  isBusy$ = this.store.select(x => x.progressReducer.isBusy);
+  currencies$ = this.store.select(x => x.entriesReducer.currencies);
+  filteredCurrencies$ = this.store.select(x => x.entriesReducer.filteredCurrencies);
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
   private _unsubscribe$ = new Subject<void>();
 
   constructor(
     public ratesService: RatesService, 
-    private store: Store<AppStore>) {
+    private store: Store<AppState>) {
   }
 
   ngOnInit() {

@@ -1,59 +1,34 @@
 import { createReducer, on } from '@ngrx/store';
 import { Entry } from '../models/entry';
-import { addEntry, copyAndAddEntry, removeEntry, loadDataSuccess, fillRates, loadData, loadDataError, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, fillRatesError, filterCurrencies, saveEntries, saveEntriesSuccess, saveEntriesError } from '../actions/entries.actions';
+import { addEntry, copyAndAddEntry, removeEntry, loadDataSuccess, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, filterCurrencies } from '../actions/entries.actions';
 import { cloneDeep } from 'lodash';
 import { AssetTypes } from '../enums/asset-types';
 import { Asset } from '../models/asset';
 import { Debt } from '../models/debt';
 import { DebtTypes } from '../enums/debt-types';
 import { Currency } from '../models/currency';
+import { ProgressState } from './progress.reducer';
 
-export interface AppStore {
-    entriesState: EntriesState;
+export interface AppState {
+    entriesReducer: EntriesState,
+    progressReducer: ProgressState
 }
 
 export interface EntriesState {
     entries: Entry[],
-    isBusy: boolean,
     currencies: Currency[],
     filteredCurrencies: Currency[]
 }
 
-export const initialState: EntriesState = { entries: [], isBusy: false, currencies: [], filteredCurrencies: [] };
+export const initialState: EntriesState = { entries: [], currencies: [], filteredCurrencies: [] };
 
 export const entriesReducer = createReducer(
     initialState,
-    on(loadData, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = true;
-        return cloneState;
-    }),
     on(loadDataSuccess, (state, { entries, currencies }) => {
         const cloneState = cloneDeep(state);
         cloneState.entries = entries;
         cloneState.currencies = currencies;
         cloneState.filteredCurrencies = currencies;
-        cloneState.isBusy = false;
-        return cloneState;
-    }),
-    on(loadDataError, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = false;
-        return cloneState;
-    }),
-    on(saveEntries, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = true;
-        return cloneState;
-    }),
-    on(saveEntriesSuccess, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = false;
-        return cloneState;
-    }),
-    on(saveEntriesError, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = false;
         return cloneState;
     }),
     on(addEntry, (state, { base }) => {
@@ -120,25 +95,14 @@ export const entriesReducer = createReducer(
         }
         return cloneState;
     }),
-    on(fillRates, state => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = true;
-        return cloneState;
-    }),
     on(fillRatesSuccess, (state, { entryDate, rates }) => {
         const cloneState = cloneDeep(state);
-        cloneState.isBusy = false;
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry && entry.rates) {
             Object.entries(rates).forEach(e => {
                 entry.rates[e[0]] = e[1];
             });
         }
-        return cloneState;
-    }),
-    on(fillRatesError, (state) => {
-        const cloneState = cloneDeep(state);
-        cloneState.isBusy = false;
         return cloneState;
     }),
     on(setRate, (state, { entryDate, rateKey, rateValue }) => {
