@@ -1,28 +1,40 @@
-<mat-toolbar color="primary">
-    <mat-icon class="icon">payments</mat-icon>
+<mat-toolbar color="primary" class="custom-toolbar">
+    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="linksMenu" aria-label="menu icon" type="button">
+        <mat-icon class="payments-icon">payments</mat-icon>
+        <mat-icon class="menu-icon">menu</mat-icon>
+    </button>
+    <mat-menu #linksMenu="matMenu">
+        <button mat-menu-item routerLink="/" type="button">Dashboard</button>
+        <button mat-menu-item routerLink="/entries" type="button">Entries</button>
+        <button mat-menu-item routerLink="/about" type="button">About</button>
+    </mat-menu>
     <span>Investor Wealth Tracker</span>
     <span class="spacer"></span>
-    <nav>
-        <button mat-flat-button color="primary" routerLink="/" routerLinkActive="active"
-            ariaCurrentWhenActive="page" type="button">Dashboard</button>
-        <button mat-flat-button color="primary" routerLink="/entries" routerLinkActive="active"
-            ariaCurrentWhenActive="page" type="button">Entries</button>
-        <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
-            ariaCurrentWhenActive="page" type="button">About</button>
+    <div class="links-container">
+        <nav class="links">
+            <button mat-flat-button color="primary" routerLink="/" routerLinkActive="active"
+                ariaCurrentWhenActive="page" type="button">Dashboard</button>
+            <button mat-flat-button color="primary" routerLink="/entries" routerLinkActive="active"
+                ariaCurrentWhenActive="page" type="button">Entries</button>
+            <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
+                ariaCurrentWhenActive="page" type="button">About</button>
+        </nav>
         <button mat-mini-fab [matMenuTriggerFor]="menu"
             [matTooltip]="authenticationService.getCurrentUser()?.displayName ?? ''" type="button">
             <ng-container *ngIf="!photoUrl">
                 {{authenticationService.getUserLetter()}}
             </ng-container>
-            <img *ngIf="photoUrl" [src]="photoUrl" title="photo"/>
+            <img *ngIf="photoUrl" [src]="photoUrl" title="photo" />
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login" type="button">Login</button>
-            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()"
-                routerLink="/register" type="button">Register</button>
+            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/login"
+                type="button">Login</button>
+            <button mat-menu-item *ngIf="!authenticationService.getCurrentUser()" routerLink="/register"
+                type="button">Register</button>
             <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" routerLink="/edit" type="button">Edit
                 Profile</button>
-            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" (click)="logout()" type="button">Logout</button>
+            <button mat-menu-item *ngIf="authenticationService.getCurrentUser()" (click)="logout()"
+                type="button">Logout</button>
         </mat-menu>
-    </nav>
+    </div>
 </mat-toolbar>

@@ -1,12 +1,52 @@
-.spacer {
-    flex: 1 1 auto;
-}
-
 img {
     width: 40px;
     height: 40px;
 }
 
-.icon {
+.menu-button {
     margin-right: 10px;
+}
+
+.custom-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.links-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.links {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.payments-icon {
+    display: inline;
+}
+
+.menu-icon {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .links {
+        display: none;
+    }
+
+    .payments-icon {
+        display: none;
+    }
+
+    .menu-icon {
+        display: inline;
+    }
 }
