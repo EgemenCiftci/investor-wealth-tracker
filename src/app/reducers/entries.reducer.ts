@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Entry } from '../models/entry';
-import { addEntry, copyAndAddEntry, removeEntry, loadDataSuccess, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, filterCurrencies } from '../actions/entries.actions';
+import { addEntry, copyAndAddEntry, removeEntry, loadDataSuccess, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, filterCurrencies, setDate, setAsset, setDebt } from '../actions/entries.actions';
 import { cloneDeep } from 'lodash';
 import { AssetTypes } from '../enums/asset-types';
 import { Asset } from '../models/asset';
@@ -110,6 +110,30 @@ export const entriesReducer = createReducer(
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry && entry.rates) {
             entry.rates[rateKey] = rateValue;
+        }
+        return cloneState;
+    }),
+    on(setDate, (state, { entryDate, value }) => {
+        const cloneState = cloneDeep(state);
+        const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
+        if (entry) {
+            entry.date = value;
+        }
+        return cloneState;
+    }),
+    on(setAsset, (state, { entryDate, assetIndex, field, value }) => {
+        const cloneState = cloneDeep(state);
+        const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
+        if (entry && entry.assets) {
+            (entry.assets[assetIndex] as any)[field] = value;
+        }
+        return cloneState;
+    }),
+    on(setDebt, (state, { entryDate, debtIndex, field, value }) => {
+        const cloneState = cloneDeep(state);
+        const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
+        if (entry && entry.debts) {
+            (entry.debts[debtIndex] as any)[field] = value;
         }
         return cloneState;
     }),

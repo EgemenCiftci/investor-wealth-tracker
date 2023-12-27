@@ -27,5 +27,8 @@ export const fillRatesSuccess = createAction('[Entries] Fill Rates Success', pro
 export const fillRatesError = createAction('[Entries] Fill Rates Error');
 
 export const setRate = createAction('[Entries] Set Rate', props<{ entryDate: Date, rateKey: string, rateValue: number }>());
+export const setDate = createAction('[Entries] Set Date', props<{ entryDate: Date, value: Date }>());
+export const setAsset = createAction('[Entries] Set Asset', props<{ entryDate: Date, assetIndex: number, field: string, value: any }>());
+export const setDebt = createAction('[Entries] Set Debt', props<{ entryDate: Date, debtIndex: number, field: string, value: any }>());
 
 export const filterCurrencies = createAction('[Entries] Filter Currencies', props<{ value: string }>());

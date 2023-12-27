@@ -29,11 +29,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private getData(entries: Entry[]): ({ x: Date, w: number, a: number, d: number })[] {
-    console.log(entries);
-    if (!Array.isArray(entries)) {
-      return [];
-    }
-
     return entries?.map(entry => ({
       x: entry.date,
       w: this.entriesService.getTotalNetWorth(entry),

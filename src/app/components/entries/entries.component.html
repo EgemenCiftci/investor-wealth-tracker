@@ -5,7 +5,7 @@
     </mat-card-header>
     <mat-card-content>
         <mat-accordion>
-            <mat-expansion-panel *ngFor="let entry of entries$ | async">
+            <mat-expansion-panel *ngFor="let entry of entries$ | async; trackBy: trackByFn">
                 <mat-expansion-panel-header>
                     <mat-panel-title>{{entry.date | date: "yyyy-MM-dd"}}</mat-panel-title>
                     <mat-panel-description>Total Net Worth:
@@ -13,15 +13,16 @@
                 </mat-expansion-panel-header>
                 <mat-form-field>
                     <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" [(ngModel)]="entry.date" title="date">
+                    <input matInput [matDatepicker]="picker" [ngModel]="entry.date" title="date"
+                        (ngModelChange)="setDate(entry.date, $event)">
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
-                <button mat-button (click)="copyAndAddEntry(entry)" type="button">
+                <button mat-button (click)="copyAndAddEntry(entry.date)" type="button">
                     <mat-icon>add</mat-icon>
                     <span>Copy & Add Entry</span>
                 </button>
-                <button mat-button color="warn" (click)="removeEntry(entry)" type="button">
+                <button mat-button color="warn" (click)="removeEntry(entry.date)" type="button">
                     <mat-icon>delete</mat-icon>
                     <span>Remove Entry</span>
                 </button>
@@ -31,40 +32,44 @@
                         <mat-panel-description>Total:
                             {{entry | total: "a" | currency}}</mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let asset of entry.assets; let i = index">
+                    <div *ngFor="let asset of entry.assets; trackBy: trackByFn, let i = index, ">
                         <mat-form-field>
                             <mat-label>Type</mat-label>
-                            <mat-select [(ngModel)]="asset.type">
+                            <mat-select [ngModel]="asset.type"
+                                (ngModelChange)="setAsset(entry.date, i, 'type', $event)">
                                 <mat-option *ngFor="let kv of assetTypes" [value]="kv[1]">{{kv[1] |
                                     camelCaseToSpaces}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Name</mat-label>
-                            <input matInput type="text" [(ngModel)]="asset.name" title="name">
+                            <input matInput type="text" [ngModel]="asset.name"
+                                (change)="setAsset(entry.date, i, 'name', $event)" title="name">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Value</mat-label>
-                            <input class="text-align-right" matInput type="number" [(ngModel)]="asset.value"
-                                title="value">
+                            <input class="text-align-right" matInput type="number" [ngModel]="asset.value"
+                                (change)="setAsset(entry.date, i, 'value', $event)" title="value">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
                             <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
-                                [(ngModel)]="asset.currencyCode" (input)="filter($event)"
-                                (focus)="filter($event)">
+                                [ngModel]="asset.currencyCode"
+                                (ngModelChange)="setAsset(entry.date, i, 'currencyCode', $event)"
+                                (input)="filter($event)">
                             <mat-autocomplete requireSelection #auto="matAutocomplete">
-                                <mat-option *ngFor="let currency of filteredCurrencies$ | async" [value]="currency.code">
+                                <mat-option *ngFor="let currency of filteredCurrencies$ | async"
+                                    [value]="currency.code">
                                     {{currency}}
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
-                        <button mat-button color="warn" (click)="removeAsset(entry, i)" type="button">
+                        <button mat-button color="warn" (click)="removeAsset(entry.date, i)" type="button">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Asset</span>
                         </button>
                     </div>
-                    <button mat-button (click)="addAsset(entry)" type="button">
+                    <button mat-button (click)="addAsset(entry.date)" type="button">
                         <mat-icon>add</mat-icon>
                         <span>Add Asset</span>
                     </button>
@@ -75,40 +80,43 @@
                         <mat-panel-description>Total:
                             {{entry | total: "d" | currency}}</mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let debt of entry.debts; let i = index">
+                    <div *ngFor="let debt of entry.debts; trackBy: trackByFn, let i = index">
                         <mat-form-field>
                             <mat-label>Type</mat-label>
-                            <mat-select [(ngModel)]="debt.type">
+                            <mat-select [ngModel]="debt.type" (ngModelChange)="setDebt(entry.date, i, 'type', $event)">
                                 <mat-option *ngFor="let kv of debtTypes" [value]="kv[1]">{{kv[1] |
                                     camelCaseToSpaces}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Name</mat-label>
-                            <input matInput type="text" [(ngModel)]="debt.name" title="name">
+                            <input matInput type="text" [ngModel]="debt.name"
+                                (change)="setDebt(entry.date, i, 'name', $event)" title="name">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Value</mat-label>
-                            <input class="text-align-right" matInput type="number" [(ngModel)]="debt.value"
-                                title="value">
+                            <input class="text-align-right" matInput type="number" [ngModel]="debt.value"
+                                (change)="setDebt(entry.date, i, 'value', $event)" title="value">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Currency</mat-label>
                             <input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto"
-                                [(ngModel)]="debt.currencyCode" (input)="filter($event)"
-                                (focus)="filter($event)">
+                                [ngModel]="debt.currencyCode"
+                                (ngModelChange)="setDebt(entry.date, i, 'currencyCode', $event)"
+                                (input)="filter($event)">
                             <mat-autocomplete requireSelection #auto="matAutocomplete">
-                                <mat-option *ngFor="let currency of filteredCurrencies$ | async" [value]="currency.code">
+                                <mat-option *ngFor="let currency of filteredCurrencies$ | async"
+                                    [value]="currency.code">
                                     {{currency}}
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
-                        <button mat-button color="warn" (click)="removeDebt(entry, i)" type="button">
+                        <button mat-button color="warn" (click)="removeDebt(entry.date, i)" type="button">
                             <mat-icon>delete</mat-icon>
                             <span>Remove Debt</span>
                         </button>
                     </div>
-                    <button mat-button (click)="addDebt(entry)" type="button">
+                    <button mat-button (click)="addDebt(entry.date)" type="button">
                         <mat-icon>add</mat-icon>
                         <span>Add Debt</span>
                     </button>
@@ -117,11 +125,11 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>Rates</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let rate of entry.rates | keyvalue">
+                    <div *ngFor="let rate of entry.rates | keyvalue; trackBy: trackByFn">
                         <mat-form-field>
                             <mat-label>{{getCurrency(rate.key) | async}}</mat-label>
                             <input class="text-align-right" matInput type="number" [ngModel]="rate.value"
-                                (change)="setRate(entry, rate.key, $event)" min="0" inputmode="numeric"
+                                (change)="setRate(entry.date, rate.key, $event)" min="0" inputmode="numeric"
                                 [readonly]="rate.key === ratesService.base" title="rate">
                         </mat-form-field>
                     </div>

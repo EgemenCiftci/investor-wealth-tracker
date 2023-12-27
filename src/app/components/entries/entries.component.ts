@@ -5,7 +5,7 @@ import { Currency } from '../../models/currency';
 import { Entry } from '../../models/entry';
 import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
-import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies } from 'src/app/actions/entries.actions';
+import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies, setDate, setAsset, setDebt } from 'src/app/actions/entries.actions';
 import { Observable, Subject, map } from 'rxjs';
 import { AppState } from 'src/app/reducers/entries.reducer';
 
@@ -21,10 +21,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
   filteredCurrencies$ = this.store.select(x => x.entriesReducer.filteredCurrencies);
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
+  trackByFn = (index: number, _item: any) => index;
   private _unsubscribe$ = new Subject<void>();
 
   constructor(
-    public ratesService: RatesService, 
+    public ratesService: RatesService,
     private store: Store<AppState>) {
   }
 
@@ -54,28 +55,28 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.store.dispatch(addEntry({ base: this.ratesService.base }));
   }
 
-  copyAndAddEntry(entry: Entry) {
-    this.store.dispatch(copyAndAddEntry({ entryDate: entry.date }));
+  copyAndAddEntry(entryDate: Date) {
+    this.store.dispatch(copyAndAddEntry({ entryDate }));
   }
 
-  addAsset(entry: Entry) {
-    this.store.dispatch(addAsset({ entryDate: entry.date, base: this.ratesService.base }));
+  addAsset(entryDate: Date) {
+    this.store.dispatch(addAsset({ entryDate, base: this.ratesService.base }));
   }
 
-  addDebt(entry: Entry) {
-    this.store.dispatch(addDebt({ entryDate: entry.date, base: this.ratesService.base }));
+  addDebt(entryDate: Date) {
+    this.store.dispatch(addDebt({ entryDate, base: this.ratesService.base }));
   }
 
-  removeEntry(entry: Entry) {
-      this.store.dispatch(removeEntry({ entryDate: entry.date }));
+  removeEntry(entryDate: Date) {
+    this.store.dispatch(removeEntry({ entryDate }));
   }
 
-  removeAsset(entry: Entry, assetIndex: number) {
-    this.store.dispatch(removeAsset({ entryDate: entry.date, assetIndex, base: this.ratesService.base }));
+  removeAsset(entryDate: Date, assetIndex: number) {
+    this.store.dispatch(removeAsset({ entryDate, assetIndex, base: this.ratesService.base }));
   }
 
-  removeDebt(entry: Entry, debtIndex: number) {
-    this.store.dispatch(removeDebt({ entryDate: entry.date, debtIndex, base: this.ratesService.base }));
+  removeDebt(entryDate: Date, debtIndex: number) {
+    this.store.dispatch(removeDebt({ entryDate, debtIndex, base: this.ratesService.base }));
   }
 
   fillRates(entry: Entry) {
@@ -86,7 +87,21 @@ export class EntriesComponent implements OnInit, OnDestroy {
     return this.currencies$.pipe(map(currencies => currencies.find(currency => currency.code === code) ?? new Currency(code, '')));
   }
 
-  setRate(entry: Entry, key: string, event: Event) {
-    this.store.dispatch(setRate({ entryDate: entry.date, rateKey: key, rateValue: (event.target as any).value }));
+  setRate(entryDate: Date, rateKey: string, event: Event) {
+    this.store.dispatch(setRate({ entryDate, rateKey, rateValue: (event.target as any).value }));
+  }
+
+  setDate(entryDate: Date, value: Date) {
+    this.store.dispatch(setDate({ entryDate, value }));
+  }
+
+  setAsset(entryDate: Date, assetIndex: number, field: string, event: any) {
+    const value = event instanceof Event ? (event.target as any).value : event;
+    this.store.dispatch(setAsset({ entryDate, assetIndex, field, value}));
+  }
+
+  setDebt(entryDate: Date, debtIndex: number, field: string, event: any) {
+    const value = event instanceof Event ? (event.target as any).value : event;
+    this.store.dispatch(setDebt({ entryDate, debtIndex, field, value }));
   }
 }
