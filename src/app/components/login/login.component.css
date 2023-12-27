@@ -1,9 +1,16 @@
 mat-card {
-    width: 25%;
+    width: 400px;
     margin: 10px;
 }
 
 mat-form-field {
     display: block;
     width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+    mat-card {
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
 }
