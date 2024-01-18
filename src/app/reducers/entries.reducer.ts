@@ -43,8 +43,9 @@ export const entriesReducer = createReducer(
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry) {
-            entry.date = new Date();
-            cloneState.entries.push(entry);
+            const entryCopy = cloneDeep(entry);
+            entryCopy.date = new Date();
+            cloneState.entries.push(entryCopy);
         }
         return cloneState;
     }),
