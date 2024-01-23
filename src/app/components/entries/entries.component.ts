@@ -97,11 +97,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   setAsset(entryDate: Date, assetIndex: number, field: string, event: any) {
     const value = event instanceof Event ? (event.target as any).value : event;
-    this.store.dispatch(setAsset({ entryDate, assetIndex, field, value}));
+    this.store.dispatch(setAsset({ entryDate, assetIndex, field, value, base: this.ratesService.base }));
   }
 
   setDebt(entryDate: Date, debtIndex: number, field: string, event: any) {
     const value = event instanceof Event ? (event.target as any).value : event;
-    this.store.dispatch(setDebt({ entryDate, debtIndex, field, value }));
+    this.store.dispatch(setDebt({ entryDate, debtIndex, field, value, base: this.ratesService.base }));
   }
 }

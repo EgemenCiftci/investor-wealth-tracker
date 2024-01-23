@@ -122,19 +122,21 @@ export const entriesReducer = createReducer(
         }
         return cloneState;
     }),
-    on(setAsset, (state, { entryDate, assetIndex, field, value }) => {
+    on(setAsset, (state, { entryDate, assetIndex, field, value, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry && entry.assets) {
             (entry.assets[assetIndex] as any)[field] = value;
+            entry.updateRates(base);
         }
         return cloneState;
     }),
-    on(setDebt, (state, { entryDate, debtIndex, field, value }) => {
+    on(setDebt, (state, { entryDate, debtIndex, field, value, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry && entry.debts) {
             (entry.debts[debtIndex] as any)[field] = value;
+            entry.updateRates(base);
         }
         return cloneState;
     }),
