@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'camelCaseToSpaces'
+    name: 'camelCaseToSpaces',
+    standalone: true
 })
 export class CamelCaseToSpacesPipe implements PipeTransform {
   transform(camelCaseText: string): string {

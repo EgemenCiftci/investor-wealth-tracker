@@ -12,9 +12,9 @@ describe('EditComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EditComponent],
-      providers: [SnackBarService, AuthenticationService, Router, DialogService, EntriesService]
-    });
+    imports: [EditComponent],
+    providers: [SnackBarService, AuthenticationService, Router, DialogService, EntriesService]
+});
     fixture = TestBed.createComponent(EditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

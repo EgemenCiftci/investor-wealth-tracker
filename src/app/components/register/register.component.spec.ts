@@ -10,9 +10,9 @@ describe('RegisterComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RegisterComponent],
-      providers: [SnackBarService, AuthenticationService, Router]
-    });
+    imports: [RegisterComponent],
+    providers: [SnackBarService, AuthenticationService, Router]
+});
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

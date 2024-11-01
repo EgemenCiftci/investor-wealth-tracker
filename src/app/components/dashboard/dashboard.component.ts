@@ -7,11 +7,17 @@ import { loadData } from 'src/app/actions/entries.actions';
 import { Observable, map } from 'rxjs';
 import { Entry } from 'src/app/models/entry';
 import { AppState } from 'src/app/reducers/entries.reducer';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardFooter } from '@angular/material/card';
+import { NgxEchartsDirective } from 'ngx-echarts';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: true,
+    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgxEchartsDirective, MatCardFooter, MatProgressBar, AsyncPipe]
 })
 export class DashboardComponent implements OnInit {
   options$: Observable<EChartsOption> = this.store.select(x => x.entriesReducer.entries).pipe(

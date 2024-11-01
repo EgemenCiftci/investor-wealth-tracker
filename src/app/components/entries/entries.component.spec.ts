@@ -11,9 +11,9 @@ describe('EntriesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EntriesComponent],
-      providers: [EntriesService, RatesService, SnackBarService, DialogService]
-    });
+    imports: [EntriesComponent],
+    providers: [EntriesService, RatesService, SnackBarService, DialogService]
+});
     fixture = TestBed.createComponent(EntriesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

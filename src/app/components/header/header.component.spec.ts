@@ -9,9 +9,9 @@ describe('HeaderComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent],
-      providers: [AuthenticationService, Router]
-    });
+    imports: [HeaderComponent],
+    providers: [AuthenticationService, Router]
+});
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

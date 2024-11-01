@@ -10,9 +10,9 @@ describe('DashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DashboardComponent],
-      providers: [EntriesService, RatesService, SnackBarService]
-    });
+    imports: [DashboardComponent],
+    providers: [EntriesService, RatesService, SnackBarService]
+});
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

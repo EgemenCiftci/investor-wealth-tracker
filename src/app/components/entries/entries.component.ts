@@ -8,11 +8,28 @@ import { Store } from '@ngrx/store';
 import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies, setDate, setAsset, setDebt } from 'src/app/actions/entries.actions';
 import { Observable, Subject, map } from 'rxjs';
 import { AppState } from 'src/app/reducers/entries.reducer';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatCardFooter } from '@angular/material/card';
+import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription } from '@angular/material/expansion';
+import { NgFor, AsyncPipe, CurrencyPipe, DatePipe, KeyValuePipe } from '@angular/common';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { CamelCaseToSpacesPipe } from '../../pipes/camel-case-to-spaces.pipe';
+import { TotalPipe } from '../../pipes/total.pipe';
 
 @Component({
-  selector: 'app-entries',
-  templateUrl: './entries.component.html',
-  styleUrls: ['./entries.component.css']
+    selector: 'app-entries',
+    templateUrl: './entries.component.html',
+    styleUrls: ['./entries.component.css'],
+    standalone: true,
+    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription, MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, MatButton, MatIcon, MatSelect, MatOption, MatAutocompleteTrigger, MatAutocomplete, MatCardActions, MatCardFooter, MatProgressBar, AsyncPipe, CurrencyPipe, DatePipe, KeyValuePipe, CamelCaseToSpacesPipe, TotalPipe]
 })
 export class EntriesComponent implements OnInit, OnDestroy {
   entries$ = this.store.select(x => x.entriesReducer.entries);

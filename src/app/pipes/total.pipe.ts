@@ -3,7 +3,8 @@ import { Entry } from '../models/entry';
 import { EntriesService } from '../services/entries.service';
 
 @Pipe({
-  name: 'total'
+    name: 'total',
+    standalone: true
 })
 export class TotalPipe implements PipeTransform {
   constructor(private entriesService: EntriesService) { }

@@ -5,11 +5,20 @@ import { DialogService } from '../../services/dialog.service';
 import { EntriesService } from '../../services/entries.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { lastValueFrom } from 'rxjs';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, MatCardFooter } from '@angular/material/card';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-  selector: 'app-edit',
-  templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css']
+    selector: 'app-edit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.css'],
+    standalone: true,
+    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatInput, FormsModule, MatCardActions, MatButton, MatIcon, MatCardFooter, MatProgressBar]
 })
 export class EditComponent implements OnInit {
   isBusy = false;
