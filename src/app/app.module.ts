@@ -87,14 +87,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
         NgxEchartsModule.forRoot({
             echarts: () => import('echarts')
         }),
-        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-        provideAuth(() => getAuth()),
-        provideDatabase(() => getDatabase()),
         StoreModule.forRoot({ entriesReducer, progressReducer }),
         EffectsModule.forRoot([EntriesEffects])
     ],
     providers: [
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+        provideAuth(() => getAuth()),
+        provideDatabase(() => getDatabase())
     ]
 })
 export class AppModule { }
