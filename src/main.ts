@@ -1,5 +1,3 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { environment } from './environment';
@@ -37,9 +35,30 @@ import { importProvidersFrom } from '@angular/core';
 
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(BrowserModule, AppRoutingModule, FormsModule, MatToolbarModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatCardModule, MatProgressBarModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, MatExpansionModule, MatCheckboxModule, MatDialogModule, MatAutocompleteModule, NgxEchartsModule.forRoot({
-            echarts: () => import('echarts')
-        }), StoreModule.forRoot({ entriesReducer, progressReducer }), EffectsModule.forRoot([EntriesEffects])),
+        importProvidersFrom(
+            BrowserModule,
+            AppRoutingModule,
+            FormsModule,
+            MatToolbarModule,
+            MatIconModule,
+            MatButtonModule,
+            MatFormFieldModule,
+            MatSelectModule,
+            MatInputModule,
+            MatDatepickerModule,
+            MatNativeDateModule,
+            MatCardModule,
+            MatProgressBarModule,
+            MatSnackBarModule,
+            MatTooltipModule,
+            MatMenuModule,
+            MatExpansionModule,
+            MatCheckboxModule,
+            MatDialogModule,
+            MatAutocompleteModule,
+            NgxEchartsModule.forRoot({ echarts: () => import('echarts') }),
+            StoreModule.forRoot({ entriesReducer, progressReducer }),
+            EffectsModule.forRoot([EntriesEffects])),
         provideHttpClient(withInterceptorsFromDi()),
         provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
         provideAuth(() => getAuth()),
