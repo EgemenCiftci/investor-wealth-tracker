@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { Database, child, get, ref, remove, set } from '@angular/fire/database';
 import { Entry } from '../models/entry';
@@ -8,9 +8,9 @@ import { Entry } from '../models/entry';
 })
 
 export class EntriesService {
-  constructor(private database: Database,
-    private authenticationService: AuthenticationService) {
-  }
+  private database = inject(Database);
+  private authenticationService = inject(AuthenticationService);
+
 
   async getEntries(): Promise<Entry[]> {
     const currentUser = this.authenticationService.getCurrentUser();

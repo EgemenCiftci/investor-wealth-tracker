@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AssetTypes } from '../../enums/asset-types';
 import { DebtTypes } from '../../enums/debt-types';
 import { Currency } from '../../models/currency';
@@ -32,6 +32,9 @@ import { TotalPipe } from '../../pipes/total.pipe';
     imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription, MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, MatButton, MatIcon, MatSelect, MatOption, MatAutocompleteTrigger, MatAutocomplete, MatCardActions, MatCardFooter, MatProgressBar, AsyncPipe, CurrencyPipe, DatePipe, KeyValuePipe, CamelCaseToSpacesPipe, TotalPipe]
 })
 export class EntriesComponent implements OnInit, OnDestroy {
+  ratesService = inject(RatesService);
+  private store = inject<Store<AppState>>(Store);
+
   entries$ = this.store.select(x => x.entriesReducer.entries);
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
   currencies$ = this.store.select(x => x.entriesReducer.currencies);
@@ -40,11 +43,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
   debtTypes = Object.entries(DebtTypes);
   trackByFn = (index: number, _item: any) => index;
   private _unsubscribe$ = new Subject<void>();
-
-  constructor(
-    public ratesService: RatesService,
-    private store: Store<AppState>) {
-  }
 
   ngOnInit() {
     this.store.dispatch(loadData());

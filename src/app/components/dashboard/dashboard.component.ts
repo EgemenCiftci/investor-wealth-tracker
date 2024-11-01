@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
@@ -20,15 +20,14 @@ import { AsyncPipe } from '@angular/common';
     imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgxEchartsDirective, MatCardFooter, MatProgressBar, AsyncPipe]
 })
 export class DashboardComponent implements OnInit {
+  private entriesService = inject(EntriesService);
+  private ratesService = inject(RatesService);
+  private store = inject<Store<AppState>>(Store);
+
   options$: Observable<EChartsOption> = this.store.select(x => x.entriesReducer.entries).pipe(
     map(entries => this.getData(entries)),
     map(data => this.getOptions(data)));
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
-
-  constructor(private entriesService: EntriesService,
-    private ratesService: RatesService,
-    private store: Store<AppState>) {
-  }
 
   ngOnInit() {
     this.store.dispatch(loadData());

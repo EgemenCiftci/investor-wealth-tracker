@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { DialogService } from '../../services/dialog.service';
@@ -21,16 +21,15 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatInput, FormsModule, MatCardActions, MatButton, MatIcon, MatCardFooter, MatProgressBar]
 })
 export class EditComponent implements OnInit {
+  private snackBarService = inject(SnackBarService);
+  private authenticationService = inject(AuthenticationService);
+  private router = inject(Router);
+  private dialogService = inject(DialogService);
+  private entriesService = inject(EntriesService);
+
   isBusy = false;
   displayName: string | undefined;
   email: string | undefined;
-
-  constructor(private snackBarService: SnackBarService,
-    private authenticationService: AuthenticationService,
-    private router: Router,
-    private dialogService: DialogService,
-    private entriesService: EntriesService) {
-  }
 
   ngOnInit() {
     const currentUser = this.authenticationService.getCurrentUser();

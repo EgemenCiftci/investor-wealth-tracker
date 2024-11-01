@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environment';
 import { lastValueFrom } from 'rxjs';
 import { Currency } from '../models/currency';
@@ -8,10 +8,9 @@ import { Currency } from '../models/currency';
   providedIn: 'root'
 })
 export class RatesService {
-  base = 'USD';
+  private httpClient = inject(HttpClient);
 
-  constructor(private httpClient: HttpClient) {
-  }
+  base = 'USD';
 
   async getRates(date: Date, currencyCodes: string[]): Promise<{ [key: string]: number }> {
     const dateString = this.formatDate(date);

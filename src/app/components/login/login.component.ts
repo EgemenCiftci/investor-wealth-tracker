@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SnackBarService } from '../../services/snack-bar.service';
@@ -18,12 +18,11 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatInput, MatCheckbox, MatCardActions, MatButton, MatIcon, MatCardFooter, MatProgressBar]
 })
 export class LoginComponent {
-  isBusy = false;
+  private snackBarService = inject(SnackBarService);
+  private authenticationService = inject(AuthenticationService);
+  private router = inject(Router);
 
-  constructor(private snackBarService: SnackBarService,
-    private authenticationService: AuthenticationService,
-    private router: Router) {
-  }
+  isBusy = false;
 
   async login(email: string, password: string, isRemember: boolean) {
     try {

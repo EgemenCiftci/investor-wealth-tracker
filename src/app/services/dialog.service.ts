@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogComponent } from '../components/dialog/dialog.component';
 
@@ -6,8 +6,8 @@ import { DialogComponent } from '../components/dialog/dialog.component';
   providedIn: 'root'
 })
 export class DialogService {
+  private dialog = inject(MatDialog);
 
-  constructor(private dialog: MatDialog) { }
 
   openDialog(title: string, content: string): MatDialogRef<DialogComponent, boolean> {
     return this.dialog.open(DialogComponent, { data: { title: title, content: content } });

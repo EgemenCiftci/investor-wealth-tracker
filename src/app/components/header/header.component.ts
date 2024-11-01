@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -16,10 +16,12 @@ import { MatTooltip } from '@angular/material/tooltip';
     imports: [MatToolbar, MatIconButton, MatMenuTrigger, MatIcon, MatMenu, MatMenuItem, RouterLink, MatButton, RouterLinkActive, MatMiniFabButton, MatTooltip]
 })
 export class HeaderComponent {
+  authenticationService = inject(AuthenticationService);
+  private router = inject(Router);
+
   photoUrl?: string;
 
-  constructor(public authenticationService: AuthenticationService,
-    private router: Router) {
+  constructor() {
     this.photoUrl = this.authenticationService.getCurrentUser()?.photoURL ?? undefined;
   }
 

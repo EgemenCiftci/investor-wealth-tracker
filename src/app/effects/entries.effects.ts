@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';import { concatLatestFrom } from '@ngrx/operators';
 
 import { EMPTY, forkJoin, from, of } from 'rxjs';
@@ -14,14 +14,13 @@ import { AppState } from '../reducers/entries.reducer';
 
 @Injectable()
 export class EntriesEffects {
-    constructor(
-        private actions$: Actions,
-        private store: Store<AppState>,
-        private entriesService: EntriesService,
-        private ratesService: RatesService,
-        private snackBarService: SnackBarService,
-        private dialogService: DialogService,
-    ) { }
+    private actions$ = inject(Actions);
+    private store = inject<Store<AppState>>(Store);
+    private entriesService = inject(EntriesService);
+    private ratesService = inject(RatesService);
+    private snackBarService = inject(SnackBarService);
+    private dialogService = inject(DialogService);
+
 
     loadData$ = createEffect(() => this.actions$.pipe(
         ofType(entriesActions.loadData),

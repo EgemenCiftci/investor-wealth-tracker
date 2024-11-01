@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Auth, EmailAuthProvider, GoogleAuthProvider, User, createUserWithEmailAndPassword, deleteUser, inMemoryPersistence, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateEmail, updatePassword, updateProfile } from '@angular/fire/auth';
 import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 
@@ -6,9 +6,11 @@ import { browserLocalPersistence, setPersistence } from 'firebase/auth';
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private auth = inject(Auth);
+
   private isUserInitialized = false;
 
-  constructor(private auth: Auth) {
+  constructor() {
     this.auth.useDeviceLanguage();
     this.auth.onAuthStateChanged(user => {
       this.isUserInitialized = true;

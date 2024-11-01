@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { Entry } from '../models/entry';
 import { EntriesService } from '../services/entries.service';
 
@@ -7,7 +7,8 @@ import { EntriesService } from '../services/entries.service';
     standalone: true
 })
 export class TotalPipe implements PipeTransform {
-  constructor(private entriesService: EntriesService) { }
+  private entriesService = inject(EntriesService);
+
 
   transform(entry: Entry, arg: 'w' | 'a' | 'd'): number {
     switch (arg) {
