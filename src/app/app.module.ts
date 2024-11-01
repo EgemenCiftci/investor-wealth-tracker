@@ -10,6 +10,10 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { environment } from '../environment';
+import { entriesReducer } from './reducers/entries.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { EntriesEffects } from './effects/entries.effects';
+import { progressReducer } from './reducers/progress.reducer';
 
 import { AppComponent } from './app.component';
 import { AboutComponent } from './components/about/about.component';
@@ -19,7 +23,9 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { EditComponent } from './components/edit/edit.component';
 import { DialogComponent } from './components/dialog/dialog.component';
+import { HeaderComponent } from './components/header/header.component';
 import { CamelCaseToSpacesPipe } from './pipes/camel-case-to-spaces.pipe';
+import { TotalPipe } from './pipes/total.pipe';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,14 +44,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { HeaderComponent } from './components/header/header.component';
-import { entriesReducer } from './reducers/entries.reducer';
-import { EffectsModule } from '@ngrx/effects';
-import { EntriesEffects } from './effects/entries.effects';
-import { TotalPipe } from './pipes/total.pipe';
-import { progressReducer } from './reducers/progress.reducer';
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         AboutComponent,
         EntriesComponent,
@@ -58,7 +59,11 @@ import { progressReducer } from './reducers/progress.reducer';
         HeaderComponent,
         TotalPipe
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         FormsModule,
@@ -86,5 +91,10 @@ import { progressReducer } from './reducers/progress.reducer';
         provideAuth(() => getAuth()),
         provideDatabase(() => getDatabase()),
         StoreModule.forRoot({ entriesReducer, progressReducer }),
-        EffectsModule.forRoot([EntriesEffects])], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        EffectsModule.forRoot([EntriesEffects])
+    ],
+    providers: [
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+})
 export class AppModule { }
