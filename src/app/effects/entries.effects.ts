@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';import { concatLatestFrom } from '@ngrx/operators';
+
 import { EMPTY, forkJoin, from, of } from 'rxjs';
 import { map, catchError, switchMap, mergeMap, tap } from 'rxjs/operators';
 import { EntriesService } from '../services/entries.service';

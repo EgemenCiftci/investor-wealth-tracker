@@ -7,7 +7,7 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { environment } from '../environment';
 
@@ -45,53 +45,46 @@ import { EntriesEffects } from './effects/entries.effects';
 import { TotalPipe } from './pipes/total.pipe';
 import { progressReducer } from './reducers/progress.reducer';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    AboutComponent,
-    EntriesComponent,
-    DashboardComponent,
-    LoginComponent,
-    RegisterComponent,
-    EditComponent,
-    DialogComponent,
-    CamelCaseToSpacesPipe,
-    HeaderComponent,
-    TotalPipe
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCardModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatMenuModule,
-    MatExpansionModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatAutocompleteModule,
-    NgxEchartsModule.forRoot({
-      echarts: () => import('echarts')
-    }),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase()),
-    StoreModule.forRoot({ entriesReducer, progressReducer }),
-    EffectsModule.forRoot([EntriesEffects])
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        AboutComponent,
+        EntriesComponent,
+        DashboardComponent,
+        LoginComponent,
+        RegisterComponent,
+        EditComponent,
+        DialogComponent,
+        CamelCaseToSpacesPipe,
+        HeaderComponent,
+        TotalPipe
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatCardModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatMenuModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        MatDialogModule,
+        MatAutocompleteModule,
+        NgxEchartsModule.forRoot({
+            echarts: () => import('echarts')
+        }),
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+        provideAuth(() => getAuth()),
+        provideDatabase(() => getDatabase()),
+        StoreModule.forRoot({ entriesReducer, progressReducer }),
+        EffectsModule.forRoot([EntriesEffects])], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
