@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EntriesComponent } from './components/entries/entries.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { AboutComponent } from './components/about/about.component';
-import { LoginComponent } from './components/login/login.component';
+
+
+
+
 import { authenticationGuard } from './guards/authentication.guard';
-import { RegisterComponent } from './components/register/register.component';
-import { EditComponent } from './components/edit/edit.component';
+
+
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, canActivate: [authenticationGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [authenticationGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [authenticationGuard] },
-  { path: 'edit', component: EditComponent, canActivate: [authenticationGuard] },
-  { path: 'entries', component: EntriesComponent, canActivate: [authenticationGuard] },
-  { path: 'about', component: AboutComponent },
+  { path: '', loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [authenticationGuard] },
+  { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent), canActivate: [authenticationGuard] },
+  { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent), canActivate: [authenticationGuard] },
+  { path: 'edit', loadComponent: () => import('./components/edit/edit.component').then(m => m.EditComponent), canActivate: [authenticationGuard] },
+  { path: 'entries', loadComponent: () => import('./components/entries/entries.component').then(m => m.EntriesComponent), canActivate: [authenticationGuard] },
+  { path: 'about', loadComponent: () => import('./components/about/about.component').then(m => m.AboutComponent) },
   { path: '**', redirectTo: '' }
 ];
 
