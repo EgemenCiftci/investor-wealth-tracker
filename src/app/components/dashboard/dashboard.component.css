@@ -1,3 +1,41 @@
 mat-card {
     margin: 10px;
 }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: transparent;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.sub-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: 5px;
+    background-color: transparent;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.percentage-green {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #00ff3c;
+}
+
+.percentage-red {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: red;
+}
+
+.text {
+    font-size: 1em;
+    color: white;
+}

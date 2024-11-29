@@ -1,9 +1,45 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Dashboard</mat-card-title>
+        <mat-card-title>Total Wealth</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <div echarts [options]="options$ | async" [loading]="(isBusy$ | async) ?? false"></div>
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Summary</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="container">
+            <div class="sub-container">
+                @let oneDayReturn = (oneDayReturn$ | async) ?? 0;
+                <div [ngClass]="oneDayReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneDayReturn |
+                    percent:'1.2-2'}}</div>
+                <div class="text">1-Day Return</div>
+            </div>
+            <div class="sub-container">
+                @let oneWeekReturn = (oneWeekReturn$ | async) ?? 0;
+                <div [ngClass]="oneWeekReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneWeekReturn |
+                    percent:'1.2-2'}}</div>
+                <div class="text">1-Week Return</div>
+            </div>
+            <div class="sub-container">
+                @let oneMonthReturn = (oneMonthReturn$ | async) ?? 0;
+                <div [ngClass]="oneMonthReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneMonthReturn |
+                    percent:'1.2-2'}}</div>
+                <div class="text">1-Month Return</div>
+            </div>
+            <div class="sub-container">
+                @let oneYearReturn = (oneYearReturn$ | async) ?? 0;
+                <div [ngClass]="oneYearReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneYearReturn |
+                    percent:'1.2-2'}}</div>
+                <div class="text">1-Year Return</div>
+            </div>
+        </div>
     </mat-card-content>
     <mat-card-footer>
         <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>

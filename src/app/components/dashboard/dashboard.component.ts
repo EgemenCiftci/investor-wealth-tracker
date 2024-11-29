@@ -4,30 +4,50 @@ import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
 import { loadData } from 'src/app/actions/entries.actions';
-import { Observable, map } from 'rxjs';
+import { Observable, map, share } from 'rxjs';
 import { Entry } from 'src/app/models/entry';
 import { AppState } from 'src/app/reducers/entries.reducer';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardFooter } from '@angular/material/card';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass, PercentPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.css'],
-    standalone: true,
-    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgxEchartsDirective, MatCardFooter, MatProgressBar, AsyncPipe]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
+  standalone: true,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    NgxEchartsDirective,
+    MatCardFooter,
+    MatProgressBar,
+    AsyncPipe,
+    NgClass,
+    PercentPipe
+  ]
 })
 export class DashboardComponent implements OnInit {
   private entriesService = inject(EntriesService);
   private ratesService = inject(RatesService);
   private store = inject<Store<AppState>>(Store);
 
-  options$: Observable<EChartsOption> = this.store.select(x => x.entriesReducer.entries).pipe(
+  share$: Observable<Entry[]> = this.store.select(x => x.entriesReducer.entries).pipe(share());
+  options$: Observable<EChartsOption> = this.share$.pipe(
     map(entries => this.getData(entries)),
     map(data => this.getOptions(data)));
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
+  oneDayReturn$: Observable<number> = this.share$.pipe(
+    map(entries => this.entriesService.getDailyTotalWorthPercentage(entries[0], entries[entries.length - 1])));
+  oneWeekReturn$: Observable<number> = this.oneDayReturn$.pipe(
+    map(x => x * 7));
+  oneMonthReturn$: Observable<number> = this.oneDayReturn$.pipe(
+    map(x => x * 30));
+  oneYearReturn$: Observable<number> = this.oneDayReturn$.pipe(
+    map(x => x * 365));
 
   ngOnInit() {
     this.store.dispatch(loadData());

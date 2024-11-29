@@ -11,7 +11,6 @@ export class EntriesService {
   private database = inject(Database);
   private authenticationService = inject(AuthenticationService);
 
-
   async getEntries(): Promise<Entry[]> {
     const currentUser = this.authenticationService.getCurrentUser();
     const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
@@ -42,6 +41,19 @@ export class EntriesService {
 
   getTotalNetWorth(entry: Entry): number {
     return this.getTotalAssets(entry) - this.getTotalDebts(entry);
+  }
+
+  getDailyTotalWorthPercentage(beginEntry: Entry, endEntry: Entry): number {
+    const deltaDays = (endEntry.date.getTime() - beginEntry.date.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (deltaDays === 0) {
+      throw new Error("The dates must be different to calculate the percentage");
+    }
+
+    const beginWorth = this.getTotalNetWorth(beginEntry);
+    const deltaWorth = this.getTotalNetWorth(endEntry) - beginWorth;
+    const worthPerDay = deltaWorth / deltaDays;
+    return worthPerDay / beginWorth;
   }
 
   getTotalAssets(entry: Entry): number {
