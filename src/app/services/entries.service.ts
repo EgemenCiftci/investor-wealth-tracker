@@ -44,7 +44,7 @@ export class EntriesService {
   }
 
   getDailyTotalWorthPercentage(beginEntry: Entry, endEntry: Entry): number {
-    const deltaDays = (endEntry.date.getTime() - beginEntry.date.getTime()) / (1000 * 60 * 60 * 24);
+    const deltaDays = Math.abs((endEntry.date.getTime() - beginEntry.date.getTime()) / (1000 * 60 * 60 * 24));
 
     if (deltaDays === 0) {
       throw new Error("The dates must be different to calculate the percentage");
