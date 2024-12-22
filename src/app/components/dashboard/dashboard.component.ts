@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
@@ -17,6 +17,7 @@ import { AsyncPipe, NgClass, PercentPipe } from '@angular/common';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatCard,
     MatCardHeader,

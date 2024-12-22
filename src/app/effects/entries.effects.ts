@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';import { concatLatestFrom } from '@ngrx/operators';
-
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { concatLatestFrom } from '@ngrx/operators';
 import { EMPTY, forkJoin, from, of } from 'rxjs';
 import { map, catchError, switchMap, mergeMap, tap } from 'rxjs/operators';
 import { EntriesService } from '../services/entries.service';
@@ -20,7 +20,6 @@ export class EntriesEffects {
     private ratesService = inject(RatesService);
     private snackBarService = inject(SnackBarService);
     private dialogService = inject(DialogService);
-
 
     loadData$ = createEffect(() => this.actions$.pipe(
         ofType(entriesActions.loadData),

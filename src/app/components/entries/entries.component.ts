@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AssetTypes } from '../../enums/asset-types';
 import { DebtTypes } from '../../enums/debt-types';
 import { Currency } from '../../models/currency';
@@ -29,6 +29,7 @@ import { TotalPipe } from '../../pipes/total.pipe';
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatCard,
     MatCardHeader,

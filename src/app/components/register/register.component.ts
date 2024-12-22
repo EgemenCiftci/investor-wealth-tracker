@@ -11,11 +11,24 @@ import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.css'],
-    standalone: true,
-    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatInput, FormsModule, MatCardActions, MatButton, MatIcon, MatCardFooter, MatProgressBar]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
+  standalone: true,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatFormField,
+    MatInput,
+    FormsModule,
+    MatCardActions,
+    MatButton,
+    MatIcon,
+    MatCardFooter,
+    MatProgressBar
+  ]
 })
 export class RegisterComponent {
   private snackBarService = inject(SnackBarService);

@@ -3,12 +3,11 @@ import { Entry } from '../models/entry';
 import { EntriesService } from '../services/entries.service';
 
 @Pipe({
-    name: 'total',
-    standalone: true
+  name: 'total',
+  standalone: true
 })
 export class TotalPipe implements PipeTransform {
   private entriesService = inject(EntriesService);
-
 
   transform(entry: Entry, arg: 'w' | 'a' | 'd'): number {
     switch (arg) {

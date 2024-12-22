@@ -7,7 +7,6 @@ import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material
 export class SnackBarService {
   private snackBar = inject(MatSnackBar);
 
-
   showSnackBar(message: string): MatSnackBarRef<TextOnlySnackBar> {
     return this.snackBar.open(message, 'X', {
       duration: 3000,
