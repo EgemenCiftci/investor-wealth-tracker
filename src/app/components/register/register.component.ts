@@ -31,9 +31,9 @@ import { MatProgressBar } from '@angular/material/progress-bar';
   ]
 })
 export class RegisterComponent {
-  private snackBarService = inject(SnackBarService);
-  private authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
+  private readonly snackBarService = inject(SnackBarService);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
 
   isBusy = false;
   displayName = '';

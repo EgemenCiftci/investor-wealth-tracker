@@ -7,7 +7,7 @@ import { EntriesService } from '../services/entries.service';
   standalone: true
 })
 export class TotalPipe implements PipeTransform {
-  private entriesService = inject(EntriesService);
+  private readonly entriesService = inject(EntriesService);
 
   transform(entry: Entry, arg: 'w' | 'a' | 'd'): number {
     switch (arg) {

@@ -16,12 +16,10 @@ export const authenticationGuard: CanActivateFn = (route, state) => {
       return true;
     }
   }
-  else {
-    if (isLoggedIn) {
-      return true;
-    } else {
-      router.navigate(['/login']);
-      return false;
-    }
+  else if (isLoggedIn) {
+    return true;
+  } else {
+    router.navigate(['/login']);
+    return false;
   }
 };

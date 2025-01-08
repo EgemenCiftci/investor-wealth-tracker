@@ -14,12 +14,12 @@ import { AppState } from '../reducers/entries.reducer';
 
 @Injectable()
 export class EntriesEffects {
-    private actions$ = inject(Actions);
-    private store = inject<Store<AppState>>(Store);
-    private entriesService = inject(EntriesService);
-    private ratesService = inject(RatesService);
-    private snackBarService = inject(SnackBarService);
-    private dialogService = inject(DialogService);
+    private readonly actions$ = inject(Actions);
+    private readonly store = inject<Store<AppState>>(Store);
+    private readonly entriesService = inject(EntriesService);
+    private readonly ratesService = inject(RatesService);
+    private readonly snackBarService = inject(SnackBarService);
+    private readonly dialogService = inject(DialogService);
 
     loadData$ = createEffect(() => this.actions$.pipe(
         ofType(entriesActions.loadData),

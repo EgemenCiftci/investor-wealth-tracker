@@ -29,7 +29,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 })
 export class HeaderComponent {
   authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   photoUrl?: string;
 

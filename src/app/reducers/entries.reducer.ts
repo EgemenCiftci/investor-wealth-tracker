@@ -69,7 +69,7 @@ export const entriesReducer = createReducer(
     on(removeAsset, (state, { entryDate, assetIndex, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.assets) {
+        if (entry?.assets) {
             entry.assets.splice(assetIndex, 1);
             entry.updateRates(base);
         }
@@ -90,7 +90,7 @@ export const entriesReducer = createReducer(
     on(removeDebt, (state, { entryDate, debtIndex, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.debts) {
+        if (entry?.debts) {
             entry.debts.splice(debtIndex, 1);
             entry.updateRates(base);
         }
@@ -99,7 +99,7 @@ export const entriesReducer = createReducer(
     on(fillRatesSuccess, (state, { entryDate, rates }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.rates) {
+        if (entry?.rates) {
             Object.entries(rates).forEach(e => {
                 entry.rates[e[0]] = e[1];
             });
@@ -109,7 +109,7 @@ export const entriesReducer = createReducer(
     on(setRate, (state, { entryDate, rateKey, rateValue }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.rates) {
+        if (entry?.rates) {
             entry.rates[rateKey] = rateValue;
         }
         return cloneState;
@@ -125,7 +125,7 @@ export const entriesReducer = createReducer(
     on(setAsset, (state, { entryDate, assetIndex, field, value, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.assets) {
+        if (entry?.assets) {
             (entry.assets[assetIndex] as any)[field] = value;
             entry.updateRates(base);
         }
@@ -134,7 +134,7 @@ export const entriesReducer = createReducer(
     on(setDebt, (state, { entryDate, debtIndex, field, value, base }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
-        if (entry && entry.debts) {
+        if (entry?.debts) {
             (entry.debts[debtIndex] as any)[field] = value;
             entry.updateRates(base);
         }

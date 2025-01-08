@@ -8,8 +8,8 @@ import { Entry } from '../models/entry';
 })
 
 export class EntriesService {
-  private database = inject(Database);
-  private authenticationService = inject(AuthenticationService);
+  private readonly database = inject(Database);
+  private readonly authenticationService = inject(AuthenticationService);
 
   async getEntries(): Promise<Entry[]> {
     const currentUser = this.authenticationService.getCurrentUser();

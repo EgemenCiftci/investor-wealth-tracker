@@ -32,9 +32,9 @@ import { AsyncPipe, NgClass, PercentPipe } from '@angular/common';
   ]
 })
 export class DashboardComponent implements OnInit {
-  private entriesService = inject(EntriesService);
-  private ratesService = inject(RatesService);
-  private store = inject<Store<AppState>>(Store);
+  private readonly entriesService = inject(EntriesService);
+  private readonly ratesService = inject(RatesService);
+  private readonly store = inject<Store<AppState>>(Store);
 
   share$: Observable<Entry[]> = this.store.select(x => x.entriesReducer.entries).pipe(share());
   options$: Observable<EChartsOption> = this.share$.pipe(

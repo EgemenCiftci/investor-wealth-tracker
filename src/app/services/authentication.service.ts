@@ -6,7 +6,7 @@ import { browserLocalPersistence, setPersistence } from 'firebase/auth';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private auth = inject(Auth);
+  private readonly auth = inject(Auth);
 
   private isUserInitialized = false;
 

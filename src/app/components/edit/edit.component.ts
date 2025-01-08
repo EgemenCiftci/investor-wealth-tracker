@@ -35,11 +35,11 @@ import { MatProgressBar } from '@angular/material/progress-bar';
   ]
 })
 export class EditComponent implements OnInit {
-  private snackBarService = inject(SnackBarService);
-  private authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
-  private dialogService = inject(DialogService);
-  private entriesService = inject(EntriesService);
+  private readonly snackBarService = inject(SnackBarService);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly entriesService = inject(EntriesService);
 
   isBusy = false;
   displayName: string | undefined;

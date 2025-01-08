@@ -8,7 +8,7 @@ import { Currency } from '../models/currency';
   providedIn: 'root'
 })
 export class RatesService {
-  private httpClient = inject(HttpClient);
+  private readonly httpClient = inject(HttpClient);
 
   base = 'USD';
 

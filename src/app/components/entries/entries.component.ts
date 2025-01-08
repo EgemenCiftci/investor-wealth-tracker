@@ -68,7 +68,7 @@ import { TotalPipe } from '../../pipes/total.pipe';
 })
 export class EntriesComponent implements OnInit, OnDestroy {
   ratesService = inject(RatesService);
-  private store = inject<Store<AppState>>(Store);
+  private readonly store = inject<Store<AppState>>(Store);
 
   entries$ = this.store.select(x => x.entriesReducer.entries);
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
@@ -77,7 +77,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
   trackByFn = (index: number, _item: any) => index;
-  private _unsubscribe$ = new Subject<void>();
+  private readonly _unsubscribe$ = new Subject<void>();
 
   ngOnInit() {
     this.store.dispatch(loadData());

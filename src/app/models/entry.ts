@@ -16,7 +16,7 @@ export class Entry {
                 acc.push(item);
             }
             return acc;
-        }, debtCurrencyCodes).sort();
+        }, debtCurrencyCodes).sort((a, b) => a.localeCompare(b));
 
         // Add new rates
         currencyCodes.forEach(c => {
