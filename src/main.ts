@@ -24,7 +24,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { provideEchartsCore } from 'ngx-echarts';
 import { StoreModule } from '@ngrx/store';
 import { entriesReducer } from './app/reducers/entries.reducer';
 import { progressReducer } from './app/reducers/progress.reducer';
@@ -32,7 +31,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { EntriesEffects } from './app/effects/entries.effects';
 import { AppComponent } from './app/app.component';
 import { importProvidersFrom } from '@angular/core';
-import * as echarts from 'echarts/core';
 
 bootstrapApplication(AppComponent, {
     providers: [
@@ -59,7 +57,6 @@ bootstrapApplication(AppComponent, {
             MatAutocompleteModule,
             StoreModule.forRoot({ entriesReducer, progressReducer }),
             EffectsModule.forRoot([EntriesEffects])),
-        provideEchartsCore({ echarts }),
         provideHttpClient(withInterceptorsFromDi()),
         provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
         provideAuth(() => getAuth()),
