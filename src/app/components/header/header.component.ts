@@ -8,24 +8,23 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatToolbar,
-    MatIconButton,
-    MatMenuTrigger,
-    MatIcon,
-    MatMenu,
-    MatMenuItem,
-    RouterLink,
-    MatButton,
-    RouterLinkActive,
-    MatMiniFabButton,
-    MatTooltip
-  ]
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatToolbar,
+        MatIconButton,
+        MatMenuTrigger,
+        MatIcon,
+        MatMenu,
+        MatMenuItem,
+        RouterLink,
+        MatButton,
+        RouterLinkActive,
+        MatMiniFabButton,
+        MatTooltip
+    ]
 })
 export class HeaderComponent {
   authenticationService = inject(AuthenticationService);

@@ -11,25 +11,24 @@ import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    MatFormField,
-    MatInput,
-    MatCheckbox,
-    MatCardActions,
-    MatButton,
-    MatIcon,
-    MatCardFooter,
-    MatProgressBar
-  ]
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatCardContent,
+        MatFormField,
+        MatInput,
+        MatCheckbox,
+        MatCardActions,
+        MatButton,
+        MatIcon,
+        MatCardFooter,
+        MatProgressBar
+    ]
 })
 export class LoginComponent {
   private readonly snackBarService = inject(SnackBarService);

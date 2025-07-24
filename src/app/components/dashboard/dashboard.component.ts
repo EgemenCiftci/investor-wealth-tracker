@@ -13,23 +13,22 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { AsyncPipe, NgClass, PercentPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    NgxEchartsDirective,
-    MatCardFooter,
-    MatProgressBar,
-    AsyncPipe,
-    NgClass,
-    PercentPipe
-  ]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatCardContent,
+        NgxEchartsDirective,
+        MatCardFooter,
+        MatProgressBar,
+        AsyncPipe,
+        NgClass,
+        PercentPipe
+    ]
 })
 export class DashboardComponent implements OnInit {
   private readonly entriesService = inject(EntriesService);
