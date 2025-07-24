@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import { EChartsCoreOption } from 'echarts/core';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   private readonly store = inject<Store<AppState>>(Store);
 
   share$: Observable<Entry[]> = this.store.select(x => x.entriesReducer.entries).pipe(share());
-  options$: Observable<EChartsOption> = this.share$.pipe(
+  options$: Observable<EChartsCoreOption> = this.share$.pipe(
     map(entries => this.getData(entries)),
     map(data => this.getOptions(data)));
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
     }));
   }
 
-  private getOptions(data: { x: Date, w: number, a: number, d: number }[]): EChartsOption {
+  private getOptions(data: { x: Date, w: number, a: number, d: number }[]): EChartsCoreOption {
     return {
       tooltip: {},
       legend: {
