@@ -9,6 +9,8 @@ export class AuthenticationService {
   private readonly auth = inject(Auth);
 
   private isUserInitialized = false;
+  private silentSignInAttempted = false;
+  private lastLogoutTime: number = 0;
 
   constructor() {
     this.auth.useDeviceLanguage();
@@ -78,9 +80,39 @@ export class AuthenticationService {
     }
   }
 
+  async attemptSilentGoogleSignIn(): Promise<boolean> {
+    try {
+      if (this.silentSignInAttempted || this.isLoggedIn()) {
+        return false;
+      }
+
+      // Prevent auto-login within 2 seconds of logout to respect user's logout action
+      const timeSinceLogout = Date.now() - this.lastLogoutTime;
+      if (timeSinceLogout < 2000) {
+        return false;
+      }
+
+      this.silentSignInAttempted = true;
+      await setPersistence(this.auth, browserLocalPersistence);
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ 'prompt': 'none' });
+
+      const userCredential = await signInWithPopup(this.auth, provider);
+      const userJson = JSON.stringify(userCredential.user);
+      localStorage.setItem('user', userJson);
+      return true;
+    } catch (error) {
+      // Silent sign-in failed or user not logged in to Chrome - this is expected
+      // Do not treat as an error since it's a normal flow
+      return false;
+    }
+  }
+
   async logout() {
     await signOut(this.auth);
     localStorage.removeItem('user');
+    this.silentSignInAttempted = false;
+    this.lastLogoutTime = Date.now();
   }
 
   async deleteUser(password: string) {
