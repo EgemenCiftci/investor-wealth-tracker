@@ -15,6 +15,9 @@ export class EntriesService {
     const currentUser = this.authenticationService.getCurrentUser();
     const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
     const entries = (await get(child(currentUserRef, 'entries'))).val();
+    if (!entries) {
+      return [];
+    }
     return Object.entries(entries).map(([key, value]: [string, any]) => new Entry(new Date(key), value.rates, value.assets, value.debts));
   }
 
@@ -60,7 +63,9 @@ export class EntriesService {
     let sum = 0;
     entry.assets?.forEach(asset => {
       const rate = entry.rates[asset.currencyCode] ?? 0;
-      sum += asset.value / rate;
+      if (rate !== 0) {
+        sum += asset.value / rate;
+      }
     });
     return sum;
   }
@@ -69,7 +74,9 @@ export class EntriesService {
     let sum = 0;
     entry.debts?.forEach(debt => {
       const rate = entry.rates[debt.currencyCode] ?? 0;
-      sum += debt.value / rate;
+      if (rate !== 0) {
+        sum += debt.value / rate;
+      }
     });
     return sum;
   }

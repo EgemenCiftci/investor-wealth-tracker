@@ -14,24 +14,24 @@ import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-    selector: 'app-edit',
-    templateUrl: './edit.component.html',
-    styleUrls: ['./edit.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatCard,
-        MatCardHeader,
-        MatCardTitle,
-        MatCardContent,
-        MatFormField,
-        MatInput,
-        FormsModule,
-        MatCardActions,
-        MatButton,
-        MatIcon,
-        MatCardFooter,
-        MatProgressBar
-    ]
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatFormField,
+    MatInput,
+    FormsModule,
+    MatCardActions,
+    MatButton,
+    MatIcon,
+    MatCardFooter,
+    MatProgressBar
+  ]
 })
 export class EditComponent implements OnInit {
   private readonly snackBarService = inject(SnackBarService);
@@ -124,12 +124,13 @@ export class EditComponent implements OnInit {
       this.isBusy = true;
       let element = document.createElement('a');
       const entries = await this.entriesService.getEntries();
-      element.href = window.URL.createObjectURL(new Blob([JSON.stringify(entries)], { type: "application/json" }));
+      element.href = globalThis.URL.createObjectURL(new Blob([JSON.stringify(entries)], { type: "application/json" }));
       element.download = 'data.json';
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click();
-      document.body.removeChild(element);
+      element.remove();
+      globalThis.URL.revokeObjectURL(element.href);
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
@@ -142,8 +143,8 @@ export class EditComponent implements OnInit {
       this.isBusy = true;
       const result = await lastValueFrom(this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?').afterClosed());
       if (result) {
-        await this.entriesService.deleteUser();
         await this.authenticationService.deleteUser(password);
+        await this.entriesService.deleteUser();
         await this.router.navigate(['/dashboard']);
       }
     } catch (error: any) {

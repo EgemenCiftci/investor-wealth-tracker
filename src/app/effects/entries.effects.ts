@@ -65,7 +65,7 @@ export class EntriesEffects {
         switchMap(() => this.dialogService.openDialog('Cancel', 'All changes will be reverted. Do you want to continue?').afterClosed().pipe(
             mergeMap(result => {
                 if (result) {
-                    return of().pipe(map(() => entriesActions.loadData()));
+                    return of(entriesActions.loadData());
                 } else {
                     return EMPTY;
                 }
