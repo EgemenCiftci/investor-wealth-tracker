@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { DialogService } from '../../services/dialog.service';
@@ -40,7 +40,7 @@ export class EditComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly entriesService = inject(EntriesService);
 
-  isBusy = false;
+  isBusy = signal(false);
   displayName: string | undefined;
   email: string | undefined;
 
@@ -62,13 +62,13 @@ export class EditComponent implements OnInit {
         this.snackBarService.showSnackBar('Display name is same as current.');
         return;
       }
-      this.isBusy = true;
+      this.isBusy.set(true);
       await this.authenticationService.updateDisplayName(displayName);
       this.snackBarService.showSnackBar('Saved successfully.');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
-      this.isBusy = false;
+      this.isBusy.set(false);
     }
   }
 
@@ -82,7 +82,7 @@ export class EditComponent implements OnInit {
         this.snackBarService.showSnackBar('Email is same as current.');
         return;
       }
-      this.isBusy = true;
+      this.isBusy.set(true);
       const result = await lastValueFrom(this.dialogService.openDialog('Update Email', 'Your email will be updated with the new one. Do you want to continue?').afterClosed());
       if (result) {
         await this.authenticationService.updateEmail(email, password);
@@ -91,7 +91,7 @@ export class EditComponent implements OnInit {
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
-      this.isBusy = false;
+      this.isBusy.set(false);
     }
   }
 
@@ -109,19 +109,19 @@ export class EditComponent implements OnInit {
         this.snackBarService.showSnackBar('New passwords do not match.');
         return;
       }
-      this.isBusy = true;
+      this.isBusy.set(true);
       await this.authenticationService.updatePassword(oldPassword, newPassword);
       this.snackBarService.showSnackBar('Saved successfully.');
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
-      this.isBusy = false;
+      this.isBusy.set(false);
     }
   }
 
   async downloadMyData() {
     try {
-      this.isBusy = true;
+      this.isBusy.set(true);
       let element = document.createElement('a');
       const entries = await this.entriesService.getEntries();
       element.href = globalThis.URL.createObjectURL(new Blob([JSON.stringify(entries)], { type: "application/json" }));
@@ -134,13 +134,13 @@ export class EditComponent implements OnInit {
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
-      this.isBusy = false;
+      this.isBusy.set(false);
     }
   }
 
   async deleteMyData(password: string) {
     try {
-      this.isBusy = true;
+      this.isBusy.set(true);
       const result = await lastValueFrom(this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?').afterClosed());
       if (result) {
         await this.authenticationService.deleteUser(password);
@@ -150,7 +150,7 @@ export class EditComponent implements OnInit {
     } catch (error: any) {
       this.snackBarService.showSnackBar(error);
     } finally {
-      this.isBusy = false;
+      this.isBusy.set(false);
     }
   }
 }
