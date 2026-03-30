@@ -81,6 +81,18 @@ export class EntriesService {
     return sum;
   }
 
+  getAssetsByType(entry: Entry): { [type: string]: number } {
+    const allocationByType: { [type: string]: number } = {};
+    entry.assets?.forEach(asset => {
+      const rate = entry.rates[asset.currencyCode] ?? 0;
+      if (rate !== 0) {
+        const amount = asset.value / rate;
+        allocationByType[asset.type] = (allocationByType[asset.type] ?? 0) + amount;
+      }
+    });
+    return allocationByType;
+  }
+
   formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');

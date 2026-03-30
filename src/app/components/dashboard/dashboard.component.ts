@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, booleanAttribute, inject } from '@angular/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
@@ -12,10 +12,10 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { AsyncPipe, NgClass, PercentPipe, CurrencyPipe } from '@angular/common';
 import * as echarts from 'echarts/core';
-import { LineChart } from 'echarts/charts';
+import { LineChart, PieChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, TimelineComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-echarts.use([GridComponent, LineChart, TooltipComponent, CanvasRenderer, LegendComponent, TimelineComponent]);
+echarts.use([GridComponent, LineChart, PieChart, TooltipComponent, CanvasRenderer, LegendComponent, TimelineComponent]);
 
 @Component({
   selector: 'app-dashboard',
@@ -46,6 +46,10 @@ export class DashboardComponent implements OnInit {
   options$: Observable<EChartsCoreOption> = this.share$.pipe(
     map(entries => this.getData(entries)),
     map(data => this.getOptions(data)));
+  allocationOptions$: Observable<EChartsCoreOption> = this.share$.pipe(
+    map(entries => entries.length > 0 ? this.getAllocationByTypeOptions(entries.at(-1)!) : {}));
+  allocationByNameOptions$: Observable<EChartsCoreOption> = this.share$.pipe(
+    map(entries => entries.length > 0 ? this.getAllocationByNameOptions(entries.at(-1)!) : {}));
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
   oneDayReturn$: Observable<number> = this.share$.pipe(
     map(entries => this.entriesService.getDailyTotalWorthPercentage(entries[0], entries.at(-1)!)));
@@ -80,6 +84,7 @@ export class DashboardComponent implements OnInit {
       baseOption: {
         legend: {
           show: true,
+          bottom: 0,
           textStyle: {
             color: 'white'
           }
@@ -114,6 +119,101 @@ export class DashboardComponent implements OnInit {
           }
         ]
       }
+    };
+  }
+
+  private getAllocationByTypeOptions(entry: Entry): EChartsCoreOption {
+    const allocation = this.entriesService.getAssetsByType(entry);
+    const data = Object.entries(allocation).map(([type, value]) => ({
+      value,
+      name: this.formatAssetType(type)
+    }));
+
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: (param: any) => {
+          if (param.componentSubType === 'pie') {
+            return `${param.name}: ${(param.percent).toFixed(1)}%`;
+          }
+          return '';
+        }
+      },
+      legend: {
+        show: true,
+        orient: 'horizontal',
+        bottom: 0,
+        textStyle: {
+          color: 'white'
+        }
+      },
+      series: [
+        {
+          name: 'Asset Allocation By Type',
+          type: 'pie',
+          radius: '40%',
+          data: data,
+          label: {
+            color: 'white'
+          }
+        }
+      ]
+    };
+  }
+
+  private formatAssetType(type: string): string {
+    const formatMap: { [key: string]: string } = {
+      liquid: 'Liquid',
+      longTerm: 'Long-Term',
+      pensionFundsAndSimilar: 'Pension Funds & Similar'
+    };
+    return formatMap[type] || type;
+  }
+
+  private getAllocationByNameOptions(entry: Entry): EChartsCoreOption {
+    const allocationByName: { [name: string]: number } = {};
+    entry.assets?.forEach(asset => {
+      const rate = entry.rates[asset.currencyCode] ?? 0;
+      if (rate !== 0) {
+        const amount = asset.value / rate;
+        allocationByName[asset.name] = (allocationByName[asset.name] ?? 0) + amount;
+      }
+    });
+
+    const data = Object.entries(allocationByName).map(([name, value]) => ({
+      value,
+      name
+    }));
+
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: (param: any) => {
+          if (param.componentSubType === 'pie') {
+            return `${param.name}: ${(param.percent).toFixed(1)}%`;
+          }
+          return '';
+        }
+      },
+      legend: {
+        show: true,
+        orient: 'horizontal',
+        bottom: 0,
+        textStyle: {
+          color: 'white'
+        }
+      },
+      series: [
+        {
+          name: 'Asset Allocation By Name',
+          type: 'pie',
+          radius: '40%',
+          data: data,
+          label: {
+            color: 'white'
+          }
+        }
+      ]
     };
   }
 }
