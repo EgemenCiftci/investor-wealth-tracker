@@ -1,20 +1,27 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Total Wealth</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <div echarts [options]="options$ | async" [loading]="(isBusy$ | async) ?? false"></div>
-    </mat-card-content>
-    <mat-card-footer>
-        <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
-    </mat-card-footer>
-</mat-card>
-<mat-card>
-    <mat-card-header>
         <mat-card-title>Summary</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <div class="container">
+            <div class="sub-container">
+                @let currentNetWorth = (currentNetWorth$ | async) ?? 0;
+                <div class="current-net-worth">{{currentNetWorth |
+                    currency}}</div>
+                <div class="text">Current Net Worth</div>
+            </div>
+            <div class="sub-container">
+                @let totalAssets = (totalAssets$ | async) ?? 0;
+                <div class="total-assets">{{totalAssets |
+                    currency}}</div>
+                <div class="text">Total Assets</div>
+            </div>
+            <div class="sub-container">
+                @let totalDebt = (totalDebt$ | async) ?? 0;
+                <div class="total-debt">{{totalDebt |
+                    currency}}</div>
+                <div class="text">Total Debt</div>
+            </div>
             <div class="sub-container">
                 @let oneDayReturn = (oneDayReturn$ | async) ?? 0;
                 <div [ngClass]="oneDayReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneDayReturn |
@@ -40,6 +47,30 @@
                 <div class="text">1-Year Return</div>
             </div>
         </div>
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Net Worth & Asset Trend</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div echarts [options]="options$ | async" [loading]="(isBusy$ | async) ?? false"></div>
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Current Asset Allocation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
     </mat-card-content>
     <mat-card-footer>
         <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>

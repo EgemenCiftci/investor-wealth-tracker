@@ -10,7 +10,7 @@ import { AppState } from 'src/app/reducers/entries.reducer';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardFooter } from '@angular/material/card';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { AsyncPipe, NgClass, PercentPipe } from '@angular/common';
+import { AsyncPipe, NgClass, PercentPipe, CurrencyPipe } from '@angular/common';
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, TimelineComponent } from 'echarts/components';
@@ -32,7 +32,8 @@ echarts.use([GridComponent, LineChart, TooltipComponent, CanvasRenderer, LegendC
     MatProgressBar,
     AsyncPipe,
     NgClass,
-    PercentPipe
+    PercentPipe,
+    CurrencyPipe
   ],
   providers: [provideEchartsCore({ echarts })],
 })
@@ -47,13 +48,19 @@ export class DashboardComponent implements OnInit {
     map(data => this.getOptions(data)));
   isBusy$ = this.store.select(x => x.progressReducer.isBusy);
   oneDayReturn$: Observable<number> = this.share$.pipe(
-    map(entries => this.entriesService.getDailyTotalWorthPercentage(entries[0], entries[entries.length - 1])));
+    map(entries => this.entriesService.getDailyTotalWorthPercentage(entries[0], entries.at(-1)!)));
   oneWeekReturn$: Observable<number> = this.oneDayReturn$.pipe(
     map(x => x * 7));
   oneMonthReturn$: Observable<number> = this.oneDayReturn$.pipe(
     map(x => x * 30));
   oneYearReturn$: Observable<number> = this.oneDayReturn$.pipe(
     map(x => x * 365));
+  currentNetWorth$: Observable<number> = this.share$.pipe(
+    map(entries => entries.length > 0 ? this.entriesService.getTotalNetWorth(entries.at(-1)!) : 0));
+  totalAssets$: Observable<number> = this.share$.pipe(
+    map(entries => entries.length > 0 ? this.entriesService.getTotalAssets(entries.at(-1)!) : 0));
+  totalDebt$: Observable<number> = this.share$.pipe(
+    map(entries => entries.length > 0 ? this.entriesService.getTotalDebts(entries.at(-1)!) : 0));
 
   ngOnInit() {
     this.store.dispatch(loadData());

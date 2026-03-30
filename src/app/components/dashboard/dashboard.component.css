@@ -39,3 +39,22 @@ mat-card {
     font-size: 1em;
     color: white;
 }
+
+.current-net-worth {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: blue;
+}
+
+.total-assets {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: green;
+}
+
+.total-debt {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: red;
+}
+
