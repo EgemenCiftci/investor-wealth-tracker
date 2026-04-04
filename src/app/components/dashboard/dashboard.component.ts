@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, booleanAttribute, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
-import { loadData } from 'src/app/actions/entries.actions';
+import { loadData } from '../../actions/entries.actions';
 import { Observable, map, share } from 'rxjs';
-import { Entry } from 'src/app/models/entry';
-import { AppState } from 'src/app/reducers/entries.reducer';
+import { Entry } from '../../models/entry';
+import { AppState } from '../../reducers/entries.reducer';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardFooter } from '@angular/material/card';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { MatProgressBar } from '@angular/material/progress-bar';

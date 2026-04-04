@@ -5,9 +5,8 @@ import { Currency } from '../../models/currency';
 import { Entry } from '../../models/entry';
 import { RatesService } from '../../services/rates.service';
 import { Store } from '@ngrx/store';
-import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies, setDate, setAsset, setDebt } from 'src/app/actions/entries.actions';
+import { addEntry, copyAndAddEntry, removeEntry, fillRates, saveEntries, addAsset, addDebt, removeAsset, removeDebt, cancelEntries, setRate, loadData, filterCurrencies, setDate, setAsset, setDebt } from '../../actions/entries.actions';
 import { Observable, Subject, map } from 'rxjs';
-import { AppState } from 'src/app/reducers/entries.reducer';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatCardFooter } from '@angular/material/card';
 import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription } from '@angular/material/expansion';
 import { AsyncPipe, CurrencyPipe, DatePipe, KeyValuePipe } from '@angular/common';
@@ -23,47 +22,48 @@ import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autoc
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { CamelCaseToSpacesPipe } from '../../pipes/camel-case-to-spaces.pipe';
 import { TotalPipe } from '../../pipes/total.pipe';
+import { AppState } from '../../reducers/entries.reducer';
 
 @Component({
-    selector: 'app-entries',
-    templateUrl: './entries.component.html',
-    styleUrls: ['./entries.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatCard,
-        MatCardHeader,
-        MatCardTitle,
-        MatCardSubtitle,
-        MatCardContent,
-        MatAccordion,
-        MatExpansionPanel,
-        MatExpansionPanelHeader,
-        MatExpansionPanelTitle,
-        MatExpansionPanelDescription,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        MatDatepickerInput,
-        FormsModule,
-        MatDatepickerToggle,
-        MatSuffix,
-        MatDatepicker,
-        MatButton,
-        MatIcon,
-        MatSelect,
-        MatOption,
-        MatAutocompleteTrigger,
-        MatAutocomplete,
-        MatCardActions,
-        MatCardFooter,
-        MatProgressBar,
-        AsyncPipe,
-        CurrencyPipe,
-        DatePipe,
-        KeyValuePipe,
-        CamelCaseToSpacesPipe,
-        TotalPipe
-    ]
+  selector: 'app-entries',
+  templateUrl: './entries.component.html',
+  styleUrls: ['./entries.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardSubtitle,
+    MatCardContent,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatDatepickerInput,
+    FormsModule,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDatepicker,
+    MatButton,
+    MatIcon,
+    MatSelect,
+    MatOption,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatCardActions,
+    MatCardFooter,
+    MatProgressBar,
+    AsyncPipe,
+    CurrencyPipe,
+    DatePipe,
+    KeyValuePipe,
+    CamelCaseToSpacesPipe,
+    TotalPipe
+  ]
 })
 export class EntriesComponent implements OnInit, OnDestroy {
   ratesService = inject(RatesService);

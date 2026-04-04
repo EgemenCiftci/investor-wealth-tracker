@@ -12,38 +12,35 @@
   <span class="spacer"></span>
   <div class="links-container">
     <nav class="links">
-      <button mat-flat-button color="primary" routerLink="/" routerLinkActive="active"
-      ariaCurrentWhenActive="page" type="button">Dashboard</button>
+      <button mat-flat-button color="primary" routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page"
+        type="button">Dashboard</button>
       <button mat-flat-button color="primary" routerLink="/entries" routerLinkActive="active"
-      ariaCurrentWhenActive="page" type="button">Entries</button>
-      <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active"
-      ariaCurrentWhenActive="page" type="button">About</button>
+        ariaCurrentWhenActive="page" type="button">Entries</button>
+      <button mat-flat-button color="primary" routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page"
+        type="button">About</button>
     </nav>
     <button mat-mini-fab [matMenuTriggerFor]="menu"
       [matTooltip]="authenticationService.getCurrentUser()?.displayName ?? ''" type="button">
       @if (!photoUrl) {
-        {{authenticationService.getUserLetter()}}
+      {{authenticationService.getUserLetter()}}
       }
       @if (photoUrl) {
-        <img [src]="photoUrl" title="photo" />
+      <img [src]="photoUrl" title="photo" alt="Profile" />
       }
     </button>
     <mat-menu #menu="matMenu">
       @if (!authenticationService.getCurrentUser()) {
-        <button mat-menu-item routerLink="/login"
-        type="button">Login</button>
+      <button mat-menu-item routerLink="/login" type="button">Login</button>
       }
       @if (!authenticationService.getCurrentUser()) {
-        <button mat-menu-item routerLink="/register"
-        type="button">Register</button>
+      <button mat-menu-item routerLink="/register" type="button">Register</button>
       }
       @if (authenticationService.getCurrentUser()) {
-        <button mat-menu-item routerLink="/edit" type="button">Edit
+      <button mat-menu-item routerLink="/edit" type="button">Edit
         Profile</button>
       }
       @if (authenticationService.getCurrentUser()) {
-        <button mat-menu-item (click)="logout()"
-        type="button">Logout</button>
+      <button mat-menu-item (click)="logout()" type="button">Logout</button>
       }
     </mat-menu>
   </div>
