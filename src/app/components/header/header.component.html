@@ -40,6 +40,9 @@
         Profile</button>
       }
       @if (authenticationService.getCurrentUser()) {
+      <button mat-menu-item routerLink="/settings" type="button">Settings</button>
+      }
+      @if (authenticationService.getCurrentUser()) {
       <button mat-menu-item (click)="logout()" type="button">Logout</button>
       }
     </mat-menu>

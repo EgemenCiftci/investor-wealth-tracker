@@ -27,7 +27,7 @@ export class Entry {
 
         // Remove non-existing rates
         Object.keys(this.rates).forEach(k => {
-            if (k !== base && !currencyCodes.some(c => k === c)) {
+            if (k !== base && !currencyCodes.includes(k)) {
                 delete this.rates[k];
             }
         });
