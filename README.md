@@ -16,7 +16,7 @@ Investor Wealth Tracker is a web application to track your assets and debts, sup
 
 1. **Clone the repository:**
    ```
-   git clone https://github.com/yourusername/investor-wealth-tracker.git
+   git clone https://github.com/egemen-ciftci/investor-wealth-tracker.git
    cd investor-wealth-tracker
    ```
 
@@ -25,8 +25,10 @@ Investor Wealth Tracker is a web application to track your assets and debts, sup
    npm install
    ```
 
-3. **Configure Firebase:**
-   - Copy your Firebase config to `src/environment.ts` as `firebaseConfig`.
+3. **Configure Firebase and API keys:**
+   - Copy your Firebase config to `src/environment.ts` as `firebaseConfig`
+   - Add your OpenExchangeRates API key to `src/environment.ts` in the `openExchangeRatesConfig.appId` field
+   - Refer to [src/environment.ts](src/environment.ts) for the expected structure
 
 4. **Run the application:**
    ```
@@ -40,21 +42,50 @@ Investor Wealth Tracker is a web application to track your assets and debts, sup
 5. **Open in browser:**
    - Visit [http://localhost:4200](http://localhost:4200)
 
+## Development Commands
+
+- **Run tests:**
+  ```
+  npm test
+  ```
+
+- **Build for production:**
+  ```
+  npm run build
+  ```
+
+- **Build with esbuild:**
+  ```
+  ng b
+  ```
+
 ## Tech Stack
 
-- [Angular](https://angular.io/)
-- [Firebase](https://firebase.google.com/)
-- [NgRx](https://ngrx.io/) for state management
-- [Angular Material](https://material.angular.io/)
+- **Framework:** [Angular](https://angular.dev/) v20 with standalone components
+- **State Management:** [NgRx](https://ngrx.io/) (store, reducers, actions, effects)
+- **Database:** [Firebase](https://firebase.google.com/) Realtime Database & Authentication
+- **UI Components:** [Angular Material](https://material.angular.io/)
+- **APIs:** OpenExchangeRates for currency conversion
+- **Testing:** Karma & Jasmine
+- **Build System:** Angular CLI with esbuild
 
 ## Project Structure
 
-- `src/app/components/` – UI components (dashboard, entries, login, register, edit, etc.)
-- `src/app/models/` – Data models (Entry, Asset, Debt, etc.)
-- `src/app/reducers/` – NgRx reducers for state management
-- `src/app/actions/` – NgRx actions
-- `src/app/effects/` – NgRx effects for side effects (e.g., API calls)
-- `src/app/services/` – Services for authentication, rates, data, etc.
+- `src/main.ts` – Application bootstrap using standalone `bootstrapApplication` with NgRx store configuration
+- `src/app/components/` – UI components (dashboard, entries, login, register, edit, about, dialog, header)
+- `src/app/models/` – Data models (Entry, Asset, Debt, Currency, etc.)
+- `src/app/reducers/` – NgRx reducers (`entriesReducer`, `progressReducer`) for state management
+- `src/app/actions/` – NgRx actions (entries and progress actions)
+- `src/app/effects/` – NgRx effects for side effects (HTTP calls, Firebase operations, dialogs)
+- `src/app/services/` – Services:
+  - `AuthenticationService` – Firebase Auth integration with email verification
+  - `EntriesService` – Firebase Realtime DB operations (users/{uid}/entries/{YYYY-MM-DD})
+  - `RatesService` – OpenExchangeRates API integration for currency conversion
+  - `DialogService` – Material dialog utilities
+  - `SnackBarService` – Material snackbar notifications
+- `src/app/guards/` – Route guards (authentication guard for protected routes)
+- `src/app/pipes/` – Custom Angular pipes (camelCaseToSpaces, total calculation)
+- `src/app/enums/` – Enumerations (assetTypes, debtTypes)
 
 ## License
 
