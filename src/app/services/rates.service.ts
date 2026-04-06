@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environment';
 import { lastValueFrom } from 'rxjs';
 import { Currency } from '../models/currency';
+import { RatesResponse } from '../models/rates-response';
+import { CurrenciesResponse } from '../models/currencies-response';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +20,16 @@ export class RatesService {
     const symbols = currencyCodes.join(',');
     const showAlternative = true;
     const url = `https://openexchangerates.org/api/historical/${dateString}.json?app_id=${appId}&base=${this.base}&symbols=${symbols}&show_alternative=${showAlternative}`;
-    const response = (await lastValueFrom(this.httpClient.get(url))) as any;
+    const response = (await lastValueFrom(this.httpClient.get(url))) as RatesResponse;
     return response.rates as { [key: string]: number };
   }
 
   async getCurrencies(): Promise<Currency[]> {
     const showAlternative = true;
     const url = `https://openexchangerates.org/api/currencies.json?show_alternative=${showAlternative}`;
-    const response = (await lastValueFrom(this.httpClient.get(url))) as any;
-    response.DOT = 'Polkadot';
-    return Object.entries(response).map(e => new Currency(e[0], e[1] as string));
+    const response = (await lastValueFrom(this.httpClient.get(url))) as CurrenciesResponse;
+    response['DOT'] = 'Polkadot';
+    return Object.entries(response).map(e => new Currency(e[0], e[1]));
   }
 
   private formatDate(date: Date): string {

@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { Database, child, get, ref, remove, set } from '@angular/fire/database';
 import { Entry } from '../models/entry';
+import { RawEntries } from '../models/raw-entries';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class EntriesService {
   async getEntries(): Promise<Entry[]> {
     const currentUser = this.authenticationService.getCurrentUser();
     const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
-    const entries = (await get(child(currentUserRef, 'entries'))).val();
+    const entries = (await get(child(currentUserRef, 'entries'))).val() as RawEntries | null;
     if (!entries) {
       return [];
     }
@@ -24,7 +25,7 @@ export class EntriesService {
   async setEntries(entries: Entry[]) {
     const currentUser = this.authenticationService.getCurrentUser();
     const currentUserRef = ref(this.database, `users/${currentUser?.uid}`);
-    let entries0: any = {};
+    let entries0: RawEntries = {};
     entries.forEach(e => {
       const key = this.formatDate(e.date);
       entries0[key] = { assets: e.assets, debts: e.debts, rates: e.rates };
@@ -63,7 +64,7 @@ export class EntriesService {
     let sum = 0;
     entry.assets?.forEach(asset => {
       const rate = entry.rates[asset.currencyCode] ?? 0;
-      if (rate !== 0) {
+      if (rate && rate !== 0) {
         sum += asset.value / rate;
       }
     });
@@ -74,7 +75,7 @@ export class EntriesService {
     let sum = 0;
     entry.debts?.forEach(debt => {
       const rate = entry.rates[debt.currencyCode] ?? 0;
-      if (rate !== 0) {
+      if (rate && rate !== 0) {
         sum += debt.value / rate;
       }
     });
@@ -85,7 +86,7 @@ export class EntriesService {
     const allocationByType: { [type: string]: number } = {};
     entry.assets?.forEach(asset => {
       const rate = entry.rates[asset.currencyCode] ?? 0;
-      if (rate !== 0) {
+      if (rate && rate !== 0) {
         const amount = asset.value / rate;
         allocationByType[asset.type] = (allocationByType[asset.type] ?? 0) + amount;
       }
