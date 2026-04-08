@@ -1,29 +1,30 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>Entries</mat-card-title>
-    <mat-card-subtitle>Count: {{(entries$ | async)?.length ?? 0}}</mat-card-subtitle>
+  <mat-card-header class="entries-header">
+    <div>
+      <mat-card-title>Entries</mat-card-title>
+      <mat-card-subtitle>Count: {{(entries$ | async)?.length ?? 0}}</mat-card-subtitle>
+    </div>
+    <button mat-button (click)="addEntry()" type="button">
+      <mat-icon>add</mat-icon>
+      <span>Add</span>
+    </button>
+    <button mat-button (click)="copyAndAddEntry()" type="button" [disabled]="!selectedEntry">
+      <mat-icon>add</mat-icon>
+      <span>Copy & Add</span>
+    </button>
+    <button mat-button (click)="editEntry()" type="button" [disabled]="!selectedEntry">
+      <mat-icon>edit</mat-icon>
+      <span>Edit</span>
+    </button>
+    <button mat-button color="warn" (click)="removeEntry()" type="button" [disabled]="!selectedEntry">
+      <mat-icon>delete</mat-icon>
+      <span>Remove</span>
+    </button>
   </mat-card-header>
   <mat-card-content>
-    <mat-accordion>
-      @for (entry of entries$ | async; track trackByFn($index, entry)) {
-      <app-entry [entry]="entry"></app-entry>
-      }
-      <button mat-button (click)="addEntry()" type="button">
-        <mat-icon>add</mat-icon>
-        <span>Add Entry</span>
-      </button>
-    </mat-accordion>
+    <ag-grid-angular [rowData]="entries$ | async" [columnDefs]="colDefs" [theme]="theme" [rowSelection]="rowSelection"
+      (selectionChanged)="onSelectionChanged($event)" (gridReady)="onGridReady($event)" />
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="accent" (click)="save()" type="button">
-      <mat-icon>save</mat-icon>
-      <span>Save</span>
-    </button>
-    <button mat-button color="warn" (click)="cancel()" type="button">
-      <mat-icon>cancel</mat-icon>
-      <span>Cancel</span>
-    </button>
-  </mat-card-actions>
   <mat-card-footer>
     <mat-progress-bar [mode]="(isBusy$ | async) ? 'indeterminate' : 'determinate'"></mat-progress-bar>
   </mat-card-footer>

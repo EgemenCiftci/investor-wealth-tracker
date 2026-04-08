@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Entry } from '../../models/entry';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -10,8 +10,8 @@ import { MatSelect, MatOption } from '@angular/material/select';
 import { CamelCaseToSpacesPipe } from '../../pipes/camel-case-to-spaces.pipe';
 import { TotalPipe } from '../../pipes/total.pipe';
 import { FormsModule } from '@angular/forms';
-import { Observable, map } from 'rxjs';
-import { copyAndAddEntry, addAsset, addDebt, removeEntry, removeAsset, removeDebt, fillRates, setRate, setDate, setAsset, setDebt, filterCurrencies } from '../../actions/entries.actions';
+import { Observable, map, take } from 'rxjs';
+import { addAsset, addDebt, removeAsset, removeDebt, fillRates, setRate, setDate, setAsset, setDebt, filterCurrencies, saveEntries, cancelEntries, saveEntriesSuccess, cancelEntriesSuccess, cancelEntriesError } from '../../actions/entries.actions';
 import { Currency } from '../../models/currency';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../reducers/entries.reducer';
@@ -20,10 +20,18 @@ import { AssetTypes } from '../../enums/asset-types';
 import { DebtTypes } from '../../enums/debt-types';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-entry',
   imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatCardActions,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
@@ -53,22 +61,21 @@ import { MatButton } from '@angular/material/button';
   styleUrl: './entry.component.css',
 })
 export class EntryComponent {
-  @Input() entry!: Entry;
   ratesService = inject(RatesService);
   private readonly store = inject<Store<AppState>>(Store);
+  private readonly actions$ = inject(Actions);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   currencies$ = this.store.select(x => x.entriesReducer.currencies);
   filteredCurrencies$ = this.store.select(x => x.entriesReducer.filteredCurrencies);
   assetTypes = Object.entries(AssetTypes);
   debtTypes = Object.entries(DebtTypes);
   trackByFn = (index: number, _item: any) => index;
+  entry$ = this.store.select(x => x.entriesReducer.entries.find(e => e.date.getTime() === Number.parseInt(this.route.snapshot.paramMap.get('date') ?? '', 10)));
 
   filter(event: any) {
     const value = event.target.value;
     this.store.dispatch(filterCurrencies({ value }));
-  }
-
-  copyAndAddEntry(entryDate: Date) {
-    this.store.dispatch(copyAndAddEntry({ entryDate }));
   }
 
   addAsset(entryDate: Date) {
@@ -77,10 +84,6 @@ export class EntryComponent {
 
   addDebt(entryDate: Date) {
     this.store.dispatch(addDebt({ entryDate, base: this.ratesService.base }));
-  }
-
-  removeEntry(entryDate: Date) {
-    this.store.dispatch(removeEntry({ entryDate }));
   }
 
   removeAsset(entryDate: Date, assetIndex: number) {
@@ -115,5 +118,25 @@ export class EntryComponent {
   setDebt(entryDate: Date, debtIndex: number, field: string, event: any) {
     const value = event instanceof Event ? (event.target as any).value : event;
     this.store.dispatch(setDebt({ entryDate, debtIndex, field, value, base: this.ratesService.base }));
+  }
+
+  save() {
+    this.actions$.pipe(
+      ofType(saveEntriesSuccess),
+      take(1)
+    ).subscribe(() => {
+      this.router.navigate(['/entries']);
+    });
+    this.store.dispatch(saveEntries({ skipDialog: false }));
+  }
+
+  cancel() {
+    this.actions$.pipe(
+      ofType(cancelEntriesSuccess),
+      take(1)
+    ).subscribe(() => {
+      this.router.navigate(['/entries']);
+    });
+    this.store.dispatch(cancelEntries());
   }
 }

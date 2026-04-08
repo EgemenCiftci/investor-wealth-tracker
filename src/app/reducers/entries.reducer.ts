@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Entry } from '../models/entry';
-import { addEntry, copyAndAddEntry, removeEntry, loadDataSuccess, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, filterCurrencies, setDate, setAsset, setDebt } from '../actions/entries.actions';
+import { addEntry, removeEntry, loadDataSuccess, addAsset, removeAsset, addDebt, removeDebt, setRate, fillRatesSuccess, filterCurrencies, setDate, setAsset, setDebt, copyAndAddEntryComplete, copyAndAddEntryCore } from '../actions/entries.actions';
 import { cloneDeep } from 'lodash';
 import { AssetTypes } from '../enums/asset-types';
 import { Asset } from '../models/asset';
@@ -39,12 +39,12 @@ export const entriesReducer = createReducer(
         cloneState.entries.push(new Entry(new Date(), { [base]: 1 }, [], []));
         return cloneState;
     }),
-    on(copyAndAddEntry, (state, { entryDate }) => {
+    on(copyAndAddEntryCore, (state, { entryDate, newDate }) => {
         const cloneState = cloneDeep(state);
         const entry = cloneState.entries.find(x => x.date.getTime() === entryDate.getTime());
         if (entry) {
             const entryCopy = cloneDeep(entry);
-            entryCopy.date = new Date();
+            entryCopy.date = newDate;
             cloneState.entries.push(entryCopy);
         }
         return cloneState;

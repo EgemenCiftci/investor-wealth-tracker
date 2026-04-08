@@ -11,6 +11,7 @@ import { SnackBarService } from '../services/snack-bar.service';
 import { DialogService } from '../services/dialog.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers/entries.reducer';
+import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class EntriesEffects {
@@ -40,34 +41,49 @@ export class EntriesEffects {
     saveEntries$ = createEffect(() => this.actions$.pipe(
         ofType(entriesActions.saveEntries),
         concatLatestFrom(() => this.store.select(x => x.entriesReducer.entries)),
-        switchMap(([, data]) => this.dialogService.openDialog('Save', 'All changes will be saved. Do you want to continue?').
-            afterClosed().pipe(
-                mergeMap(result => {
-                    if (result) {
-                        this.store.dispatch(progressActions.showProgress());
-                        return from(this.entriesService.setEntries(data)).pipe(
-                            map(() => entriesActions.saveEntriesSuccess()),
-                            tap(() => this.snackBarService.showSnackBar('Saved successfully!')),
-                            catchError(error => {
-                                this.snackBarService.showSnackBar(error);
-                                return of(entriesActions.saveEntriesError());
-                            }),
-                            tap(() => this.store.dispatch(progressActions.hideProgress()))
-                        )
-                    } else {
-                        return EMPTY;
-                    }
-                })
-            ))));
+        switchMap(([action, data]) => {
+            if (action.skipDialog) {
+                this.store.dispatch(progressActions.showProgress());
+                return from(this.entriesService.setEntries(data)).pipe(
+                    map(() => entriesActions.saveEntriesSuccess()),
+                    tap(() => this.snackBarService.showSnackBar('Saved successfully!')),
+                    catchError(error => {
+                        this.snackBarService.showSnackBar(error);
+                        return of(entriesActions.saveEntriesError());
+                    }),
+                    tap(() => this.store.dispatch(progressActions.hideProgress()))
+                );
+            } else {
+                return this.dialogService.openDialog('Save', 'All changes will be saved. Do you want to continue?').
+                    afterClosed().pipe(
+                        mergeMap(result => {
+                            if (result) {
+                                this.store.dispatch(progressActions.showProgress());
+                                return from(this.entriesService.setEntries(data)).pipe(
+                                    map(() => entriesActions.saveEntriesSuccess()),
+                                    tap(() => this.snackBarService.showSnackBar('Saved successfully!')),
+                                    catchError(error => {
+                                        this.snackBarService.showSnackBar(error);
+                                        return of(entriesActions.saveEntriesError());
+                                    }),
+                                    tap(() => this.store.dispatch(progressActions.hideProgress()))
+                                )
+                            } else {
+                                return EMPTY;
+                            }
+                        })
+                    )
+            }
+        })));
 
     cancelEntries$ = createEffect(() => this.actions$.pipe(
         ofType(entriesActions.cancelEntries),
         switchMap(() => this.dialogService.openDialog('Cancel', 'All changes will be reverted. Do you want to continue?').afterClosed().pipe(
             mergeMap(result => {
                 if (result) {
-                    return of(entriesActions.loadData());
+                    return of(entriesActions.loadData(), entriesActions.cancelEntriesSuccess());
                 } else {
-                    return EMPTY;
+                    return of(entriesActions.cancelEntriesError());
                 }
             }))
         )
@@ -87,5 +103,11 @@ export class EntriesEffects {
                 tap(() => this.store.dispatch(progressActions.hideProgress()))
             );
         })
+    ));
+
+    copyAndAddEntry$ = createEffect(() => this.actions$.pipe(
+        ofType(entriesActions.copyAndAddEntry),
+        switchMap(action => of(entriesActions.copyAndAddEntryCore({ entryDate: action.entryDate, newDate: action.newDate }))),
+        tap(() => this.store.dispatch(entriesActions.copyAndAddEntryComplete()))
     ));
 }

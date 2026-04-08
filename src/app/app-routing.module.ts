@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent), canActivate: [authenticationGuard] },
   { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent), canActivate: [authenticationGuard] },
   { path: 'edit', loadComponent: () => import('./components/edit/edit.component').then(m => m.EditComponent), canActivate: [authenticationGuard] },
+  { path: 'entry/:date', loadComponent: () => import('./components/entry/entry.component').then(m => m.EntryComponent), canActivate: [authenticationGuard] },
   { path: 'entries', loadComponent: () => import('./components/entries/entries.component').then(m => m.EntriesComponent), canActivate: [authenticationGuard] },
   { path: 'settings', loadComponent: () => import('./components/settings/settings.component').then(m => m.SettingsComponent), canActivate: [authenticationGuard] },
   { path: 'about', loadComponent: () => import('./components/about/about.component').then(m => m.AboutComponent) },

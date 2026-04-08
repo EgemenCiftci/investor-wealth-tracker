@@ -6,14 +6,20 @@ export const loadData = createAction('[Entries] Load Data');
 export const loadDataSuccess = createAction('[Entries] Load Data Success', props<{ entries: Entry[], currencies: Currency[] }>());
 export const loadDataError = createAction('[Entries] Load Data Error');
 
-export const saveEntries = createAction('[Entries] Save Entries');
+export const saveEntries = createAction('[Entries] Save Entries', props<{ skipDialog: boolean }>());
 export const saveEntriesSuccess = createAction('[Entries] Save Entries Success');
 export const saveEntriesError = createAction('[Entries] Save Entries Error');
 
 export const cancelEntries = createAction('[Entries] Cancel Entries');
+export const cancelEntriesSuccess = createAction('[Entries] Cancel Entries Success');
+export const cancelEntriesError = createAction('[Entries] Cancel Entries Error');
 
 export const addEntry = createAction('[Entries] Add Entry', props<{ base: string }>());
-export const copyAndAddEntry = createAction('[Entries] Copy And Add Entry', props<{ entryDate: Date }>());
+
+export const copyAndAddEntryCore = createAction('[Entries] Copy And Add Entry Core', props<{ entryDate: Date, newDate: Date }>());
+export const copyAndAddEntry = createAction('[Entries] Copy And Add Entry', props<{ entryDate: Date, newDate: Date }>());
+export const copyAndAddEntryComplete = createAction('[Entries] Copy And Add Entry Complete');
+
 export const removeEntry = createAction('[Entries] Remove Entry', props<{ entryDate: Date }>());
 
 export const addAsset = createAction('[Entries] Add Asset', props<{ entryDate: Date, base: string }>());

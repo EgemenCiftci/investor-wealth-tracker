@@ -24,6 +24,7 @@
     "@ngrx/effects": "^20.1.0",
     "@ngrx/operators": "^20.1.0",
     "@ngrx/store": "^20.1.0",
+    "ag-grid-angular": "^35.2.1",
     "echarts": "^5.6.0",
     "lodash": "^4.17.21",
     "ngx-echarts": "^19.0.0",
