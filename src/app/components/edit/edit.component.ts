@@ -55,18 +55,18 @@ export class EditComponent implements OnInit {
   async saveDisplayName(displayName: string) {
     try {
       if (!displayName) {
-        this.snackBarService.showSnackBar('Display name is required.');
+        this.snackBarService.open('Display name is required.');
         return;
       }
       if (displayName === this.authenticationService.getCurrentUser()?.displayName) {
-        this.snackBarService.showSnackBar('Display name is same as current.');
+        this.snackBarService.open('Display name is same as current.');
         return;
       }
       this.isBusy.set(true);
       await this.authenticationService.updateDisplayName(displayName);
-      this.snackBarService.showSnackBar('Saved successfully.');
+      this.snackBarService.open('Saved successfully.');
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -75,21 +75,21 @@ export class EditComponent implements OnInit {
   async saveEmail(email: string, password: string) {
     try {
       if (!email) {
-        this.snackBarService.showSnackBar('Email is required.');
+        this.snackBarService.open('Email is required.');
         return;
       }
       if (email === this.authenticationService.getCurrentUser()?.email) {
-        this.snackBarService.showSnackBar('Email is same as current.');
+        this.snackBarService.open('Email is same as current.');
         return;
       }
       this.isBusy.set(true);
       const result = await lastValueFrom(this.dialogService.openDialog('Update Email', 'Your email will be updated with the new one. Do you want to continue?').afterClosed());
       if (result) {
         await this.authenticationService.updateEmail(email, password);
-        this.snackBarService.showSnackBar('We have sent a verification to your old email. Please check.');
+        this.snackBarService.open('We have sent a verification to your old email. Please check.');
       }
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -98,22 +98,22 @@ export class EditComponent implements OnInit {
   async savePassword(oldPassword: string, newPassword: string, newPasswordRepeat: string) {
     try {
       if (!oldPassword) {
-        this.snackBarService.showSnackBar('Password is required.');
+        this.snackBarService.open('Password is required.');
         return;
       }
       if (!newPassword || !newPasswordRepeat) {
-        this.snackBarService.showSnackBar('New password is required.');
+        this.snackBarService.open('New password is required.');
         return;
       }
       if (newPassword !== newPasswordRepeat) {
-        this.snackBarService.showSnackBar('New passwords do not match.');
+        this.snackBarService.open('New passwords do not match.');
         return;
       }
       this.isBusy.set(true);
       await this.authenticationService.updatePassword(oldPassword, newPassword);
-      this.snackBarService.showSnackBar('Saved successfully.');
+      this.snackBarService.open('Saved successfully.');
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -132,7 +132,7 @@ export class EditComponent implements OnInit {
       element.remove();
       globalThis.URL.revokeObjectURL(element.href);
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -148,7 +148,7 @@ export class EditComponent implements OnInit {
         await this.router.navigate(['/dashboard']);
       }
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }

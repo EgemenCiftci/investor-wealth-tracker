@@ -31,7 +31,7 @@ export class EntriesEffects {
         }).pipe(
             map(({ entries, currencies }) => entriesActions.loadDataSuccess({ entries, currencies })),
             catchError(error => {
-                this.snackBarService.showSnackBar(error);
+                this.snackBarService.open(error);
                 return of(entriesActions.loadDataError());
             })
         )),
@@ -46,9 +46,9 @@ export class EntriesEffects {
                 this.store.dispatch(progressActions.showProgress());
                 return from(this.entriesService.setEntries(data)).pipe(
                     map(() => entriesActions.saveEntriesSuccess()),
-                    tap(() => this.snackBarService.showSnackBar('Saved successfully!')),
+                    tap(() => this.snackBarService.open('Saved successfully!')),
                     catchError(error => {
-                        this.snackBarService.showSnackBar(error);
+                        this.snackBarService.open(error);
                         return of(entriesActions.saveEntriesError());
                     }),
                     tap(() => this.store.dispatch(progressActions.hideProgress()))
@@ -61,9 +61,9 @@ export class EntriesEffects {
                                 this.store.dispatch(progressActions.showProgress());
                                 return from(this.entriesService.setEntries(data)).pipe(
                                     map(() => entriesActions.saveEntriesSuccess()),
-                                    tap(() => this.snackBarService.showSnackBar('Saved successfully!')),
+                                    tap(() => this.snackBarService.open('Saved successfully!')),
                                     catchError(error => {
-                                        this.snackBarService.showSnackBar(error);
+                                        this.snackBarService.open(error);
                                         return of(entriesActions.saveEntriesError());
                                     }),
                                     tap(() => this.store.dispatch(progressActions.hideProgress()))
@@ -97,7 +97,7 @@ export class EntriesEffects {
             return from(this.ratesService.getRates(action.entryDate, filteredRatesKeys)).pipe(
                 map(rates => entriesActions.fillRatesSuccess({ entryDate: action.entryDate, rates })),
                 catchError(error => {
-                    this.snackBarService.showSnackBar(error);
+                    this.snackBarService.open(error);
                     return of(entriesActions.fillRatesError());
                 }),
                 tap(() => this.store.dispatch(progressActions.hideProgress()))

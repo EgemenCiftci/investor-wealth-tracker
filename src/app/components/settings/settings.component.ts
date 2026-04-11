@@ -46,9 +46,9 @@ export class SettingsComponent implements OnInit {
     try {
       this.isBusy.set(true);
       await this.settingsService.setSettings(this.settings());
-      this.snackBarService.showSnackBar('Settings saved successfully.');
+      this.snackBarService.open('Settings saved successfully.');
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }

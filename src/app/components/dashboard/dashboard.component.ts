@@ -15,6 +15,12 @@ import * as echarts from 'echarts/core';
 import { LineChart, PieChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent, TimelineComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { SnackBarService } from '../../services/snack-bar.service';
+import { GeminiService } from '../../services/gemini.service';
+
 echarts.use([GridComponent, LineChart, PieChart, TooltipComponent, CanvasRenderer, LegendComponent, TimelineComponent]);
 
 @Component({
@@ -30,6 +36,9 @@ echarts.use([GridComponent, LineChart, PieChart, TooltipComponent, CanvasRendere
     NgxEchartsDirective,
     MatCardFooter,
     MatProgressBar,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
     AsyncPipe,
     NgClass,
     PercentPipe,
@@ -40,7 +49,9 @@ echarts.use([GridComponent, LineChart, PieChart, TooltipComponent, CanvasRendere
 export class DashboardComponent implements OnInit {
   private readonly entriesService = inject(EntriesService);
   private readonly ratesService = inject(RatesService);
+  private readonly geminiService = inject(GeminiService);
   private readonly store = inject<Store<AppState>>(Store);
+  private readonly snackBarService = inject(SnackBarService);
 
   share$: Observable<Entry[]> = this.store.select(x => x.entriesReducer.entries).pipe(share());
   options$: Observable<EChartsCoreOption> = this.share$.pipe(
@@ -216,4 +227,20 @@ export class DashboardComponent implements OnInit {
       ]
     };
   }
+
+  async getInsight() {
+    this.snackBarService.open('Generating insight...', 0);
+    const entries = await this.entriesService.getEntries();
+    const snapshot = JSON.stringify(entries.at(-1));
+    try {
+      const insight = await this.geminiService.generateInsight(snapshot);
+      this.snackBarService.close();
+      this.snackBarService.open(insight, 0);
+    } catch (error) {
+      console.error('Error generating insight:', error);
+      this.snackBarService.close();
+      this.snackBarService.open('Failed to generate insight.', 0);
+    }
+  }
 }
+

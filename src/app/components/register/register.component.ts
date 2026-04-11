@@ -45,13 +45,13 @@ export class RegisterComponent {
       this.isBusy = true;
       if (this.password === this.passwordRepeat) {
         await this.authenticationService.register(this.displayName, this.email, this.password);
-        this.snackBarService.showSnackBar('We have sent a verification email. Please check.');
+        this.snackBarService.open('We have sent a verification email. Please check.');
         await this.router.navigate(['/dashboard']);
       } else {
-        this.snackBarService.showSnackBar('Passwords do not match!');
+        this.snackBarService.open('Passwords do not match!');
       }
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy = false;
     }
@@ -62,7 +62,7 @@ export class RegisterComponent {
       this.isBusy = true;
       await this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy = false;
     }

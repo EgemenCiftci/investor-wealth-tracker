@@ -10,8 +10,14 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.mat-mdc-snack-bar-container {
-    --mat-mdc-snack-bar-button-color: white;
-    --mat-snackbar-container-color: #4a4a4a;
-    --mat-snackbar-supporting-text-color: #e4e4e4;
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+    background-color: #4a4a4a !important;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__label {
+    color: #e4e4e4 !important;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button {
+    color: white !important;
 }

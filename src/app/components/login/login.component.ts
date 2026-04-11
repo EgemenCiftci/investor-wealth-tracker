@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
       }
     } catch (error: any) {
       // Silent sign-in failed, user will need to manually sign in
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
       await this.authenticationService.loginWithEmailPassword(email, password, isRemember);
       await this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }
@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
       await this.authenticationService.loginWithGoogle(isRemember);
       await this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      this.snackBarService.showSnackBar(error);
+      this.snackBarService.open(error);
     } finally {
       this.isBusy.set(false);
     }

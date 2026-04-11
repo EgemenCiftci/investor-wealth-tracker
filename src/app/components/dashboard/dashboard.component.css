@@ -108,3 +108,8 @@ mat-card {
     margin-bottom: 10px;
     font-size: 0.9em;
 }
+
+mat-card-title {
+    display: flex;
+    align-items: center;
+}
