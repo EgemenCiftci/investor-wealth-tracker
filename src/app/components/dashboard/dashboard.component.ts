@@ -20,6 +20,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { GeminiService } from '../../services/gemini.service';
+import { SettingsService } from '../../services/settings.service';
 
 echarts.use([GridComponent, LineChart, PieChart, TooltipComponent, CanvasRenderer, LegendComponent, TimelineComponent]);
 
@@ -52,6 +53,7 @@ export class DashboardComponent implements OnInit {
   private readonly geminiService = inject(GeminiService);
   private readonly store = inject<Store<AppState>>(Store);
   private readonly snackBarService = inject(SnackBarService);
+  private readonly settingsService = inject(SettingsService);
 
   share$: Observable<Entry[]> = this.store.select(x => x.entriesReducer.entries).pipe(share());
   options$: Observable<EChartsCoreOption> = this.share$.pipe(
@@ -229,6 +231,11 @@ export class DashboardComponent implements OnInit {
   }
 
   async getInsight() {
+    const settings = await this.settingsService.getSettings();
+    if (!settings.geminiApiKey) {
+      this.snackBarService.open('Gemini API key is not set. Please set it in the settings.', 0);
+      return;
+    }
     this.snackBarService.open('Generating insight...', 0);
     const entries = await this.entriesService.getEntries();
     const snapshot = JSON.stringify(entries.at(-1));
