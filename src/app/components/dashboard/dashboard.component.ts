@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { EntriesService } from '../../services/entries.service';
 import { RatesService } from '../../services/rates.service';
@@ -78,6 +78,7 @@ export class DashboardComponent implements OnInit {
     map(entries => entries.length > 0 ? this.entriesService.getTotalAssets(entries.at(-1)!) : 0));
   totalDebt$: Observable<number> = this.share$.pipe(
     map(entries => entries.length > 0 ? this.entriesService.getTotalDebts(entries.at(-1)!) : 0));
+  isGettingInsight = signal(false);
 
   ngOnInit() {
     this.store.dispatch(loadData());
@@ -236,6 +237,7 @@ export class DashboardComponent implements OnInit {
       this.snackBarService.open('Gemini API key is not set. Please set it in the settings.', 0);
       return;
     }
+    this.isGettingInsight.set(true);
     this.snackBarService.open('Generating insight...', 0);
     const entries = await this.entriesService.getEntries();
     const snapshot = JSON.stringify(entries.at(-1));
@@ -247,6 +249,8 @@ export class DashboardComponent implements OnInit {
       console.error('Error generating insight:', error);
       this.snackBarService.close();
       this.snackBarService.open('Failed to generate insight.', 0);
+    } finally {
+      this.isGettingInsight.set(false);
     }
   }
 }
