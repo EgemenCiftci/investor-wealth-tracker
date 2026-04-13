@@ -143,8 +143,8 @@ export class EditComponent implements OnInit {
       this.isBusy.set(true);
       const result = await lastValueFrom(this.dialogService.openDialog('Delete My Data', 'Your account and your data will be deleted. Do you want to continue?').afterClosed());
       if (result) {
-        await this.authenticationService.deleteUser(password);
         await this.entriesService.deleteUser();
+        await this.authenticationService.deleteUser(password);
         await this.router.navigate(['/dashboard']);
       }
     } catch (error: any) {
