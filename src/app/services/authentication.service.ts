@@ -115,11 +115,19 @@ export class AuthenticationService {
     this.lastLogoutTime = Date.now();
   }
 
-  async deleteUser(password: string) {
+  async reauthenticate(password: string) {
     const currentUser = this.getCurrentUser();
     if (currentUser?.email) {
       const credential = EmailAuthProvider.credential(currentUser.email, password);
       await reauthenticateWithCredential(currentUser, credential);
+    } else {
+      throw new Error('Current user is null.');
+    }
+  }
+
+  async deleteUser() {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
       await deleteUser(currentUser);
     } else {
       throw new Error('Current user is null.');
