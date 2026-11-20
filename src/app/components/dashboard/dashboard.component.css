@@ -1,80 +1,110 @@
+:host {
+    display: block;
+    padding: 12px;
+}
+
 mat-card {
-    margin: 10px;
+    margin: 0 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    overflow: hidden;
+}
+
+mat-card-header {
+    padding: 16px 20px 8px;
+}
+
+mat-card-content {
+    padding: 8px 20px 16px;
+}
+
+mat-card-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 600;
 }
 
 .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: transparent;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(110px, 1fr));
+    gap: 10px;
     width: 100%;
-    margin: 0 auto;
 }
 
 .sub-container {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    margin: 5px;
-    background-color: transparent;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
+    justify-content: center;
+    gap: 6px;
+    min-height: 82px;
+    padding: 14px 12px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+.net-worth-card {
+    background: rgba(33, 150, 243, 0.1);
+    border-color: rgba(33, 150, 243, 0.24);
+}
+
+.metric-label {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.78rem;
+    line-height: 1.2;
+}
+
+.percentage-green,
+.percentage-red,
+.current-net-worth,
+.total-assets,
+.total-debt {
+    min-width: 0;
+    font-size: clamp(0.95rem, 1.3vw, 1.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
 }
 
 .percentage-green {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #00ff3c;
+    color: #69f0ae;
 }
 
 .percentage-red {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: red;
-}
-
-.text {
-    font-size: 1em;
-    color: white;
+    color: #ff5252;
 }
 
 .current-net-worth {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: blue;
+    color: #64b5f6;
 }
 
 .total-assets {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: green;
+    color: #69f0ae;
 }
 
 .total-debt {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: red;
+    color: #ff5252;
 }
 
 .charts-container {
-    display: flex;
-    gap: 10px;
-    height: calc(100vh - 250px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+    gap: 12px;
 }
 
 .chart-card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    height: clamp(360px, 48vh, 520px);
     min-width: 0;
 }
 
 .chart-card mat-card-content {
     flex: 1;
-    overflow: hidden;
+    min-height: 0;
     display: flex;
+    overflow: hidden;
 }
 
 .chart {
@@ -83,33 +113,154 @@ mat-card {
 }
 
 .allocation-charts {
-    display: flex;
-    gap: 10px;
-    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
+    min-height: 0;
 }
 
 .allocation-chart {
-    flex: 1;
+    min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
 }
 
 .allocation-chart .chart {
     flex: 1;
-    overflow: hidden;
+    min-height: 250px;
 }
 
 .chart-label {
     text-align: center;
-    color: white;
+    color: rgba(255, 255, 255, 0.72);
     font-weight: 500;
-    margin-bottom: 10px;
-    font-size: 0.9em;
+    margin: 4px 0;
+    font-size: 0.85rem;
 }
 
-mat-card-title {
-    display: flex;
-    align-items: center;
+.allocation-card-header {
+    justify-content: space-between;
+}
+
+.allocation-card-header mat-card-title {
+    width: 100%;
+    justify-content: space-between;
+}
+
+@media (max-width: 1100px) {
+    .container {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-card {
+        height: 440px;
+    }
+}
+
+@media (min-width: 1101px) {
+    :host {
+        box-sizing: border-box;
+        height: calc(100dvh - 64px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .summary-card {
+        flex: 0 0 auto;
+    }
+
+    .charts-container {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .chart-card {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    :host {
+        padding: 8px;
+    }
+
+    mat-card {
+        margin-bottom: 8px;
+        border-radius: 10px;
+    }
+
+    mat-card-header {
+        padding: 12px 12px 6px;
+    }
+
+    mat-card-content {
+        padding: 6px 12px 12px;
+    }
+
+    .container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .net-worth-card {
+        grid-column: 1 / -1;
+    }
+
+    .sub-container {
+        min-height: 74px;
+        padding: 12px 10px;
+    }
+
+    .charts-container {
+        gap: 8px;
+    }
+
+    .chart-card {
+        height: 380px;
+    }
+
+    .allocation-card {
+        height: auto;
+    }
+
+    .allocation-card mat-card-content {
+        flex: none;
+        overflow: visible;
+    }
+
+    .allocation-charts {
+        grid-template-columns: 1fr;
+        overflow: visible;
+    }
+
+    .allocation-chart {
+        height: 280px;
+    }
+
+    .allocation-chart .chart {
+        min-height: 220px;
+    }
+}
+
+@media (max-width: 380px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .percentage-green,
+    .percentage-red,
+    .current-net-worth,
+    .total-assets,
+    .total-debt {
+        font-size: 0.95rem;
+    }
 }

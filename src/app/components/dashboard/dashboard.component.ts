@@ -116,19 +116,19 @@ export class DashboardComponent implements OnInit {
           {
             name: 'Total Wealth',
             type: 'line',
-            color: 'blue',
+            color: '#64b5f6',
             data: data?.map(f => f.w),
           },
           {
             name: 'Assets',
             type: 'line',
-            color: 'green',
+            color: '#69f0ae',
             data: data?.map(f => f.a),
           },
           {
             name: 'Debts',
             type: 'line',
-            color: 'red',
+            color: '#ff5252',
             data: data?.map(f => f.d),
           }
         ]
@@ -165,7 +165,8 @@ export class DashboardComponent implements OnInit {
         {
           name: 'Asset Allocation By Type',
           type: 'pie',
-          radius: '40%',
+          center: ['50%', '38%'],
+          radius: '32%',
           data: data,
           label: {
             color: 'white'
@@ -221,7 +222,8 @@ export class DashboardComponent implements OnInit {
         {
           name: 'Asset Allocation By Name',
           type: 'pie',
-          radius: '40%',
+          center: ['50%', '38%'],
+          radius: '32%',
           data: data,
           label: {
             color: 'white'

@@ -1,50 +1,53 @@
-<mat-card>
+<mat-card class="summary-card">
     <mat-card-header>
-        <mat-card-title>Summary</mat-card-title>
+        <mat-card-title>Portfolio Summary</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <div class="container">
-            <div class="sub-container">
-                @let currentNetWorth = (currentNetWorth$ | async) ?? 0;
-                <div class="current-net-worth">{{currentNetWorth |
-                    currency}}</div>
-                <div class="text">Current Net Worth</div>
+            @let currentNetWorth = (currentNetWorth$ | async) ?? 0;
+            <div class="sub-container net-worth-card">
+                <div class="metric-label">Current Net Worth</div>
+                <div class="current-net-worth">{{currentNetWorth | currency}}</div>
             </div>
+
+            @let totalAssets = (totalAssets$ | async) ?? 0;
             <div class="sub-container">
-                @let totalAssets = (totalAssets$ | async) ?? 0;
-                <div class="total-assets">{{totalAssets |
-                    currency}}</div>
-                <div class="text">Total Assets</div>
+                <div class="metric-label">Total Assets</div>
+                <div class="total-assets">{{totalAssets | currency}}</div>
             </div>
+
+            @let totalDebt = (totalDebt$ | async) ?? 0;
             <div class="sub-container">
-                @let totalDebt = (totalDebt$ | async) ?? 0;
-                <div class="total-debt">{{totalDebt |
-                    currency}}</div>
-                <div class="text">Total Debt</div>
+                <div class="metric-label">Total Debt</div>
+                <div class="total-debt">{{totalDebt | currency}}</div>
             </div>
+
+            @let oneDayReturn = (oneDayReturn$ | async) ?? 0;
             <div class="sub-container">
-                @let oneDayReturn = (oneDayReturn$ | async) ?? 0;
+                <div class="metric-label">1-Day Return</div>
                 <div [ngClass]="oneDayReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneDayReturn |
                     percent:'1.2-2'}}</div>
-                <div class="text">1-Day Return</div>
             </div>
+
+            @let oneWeekReturn = (oneWeekReturn$ | async) ?? 0;
             <div class="sub-container">
-                @let oneWeekReturn = (oneWeekReturn$ | async) ?? 0;
+                <div class="metric-label">1-Week Return</div>
                 <div [ngClass]="oneWeekReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneWeekReturn |
                     percent:'1.2-2'}}</div>
-                <div class="text">1-Week Return</div>
             </div>
+
+            @let oneMonthReturn = (oneMonthReturn$ | async) ?? 0;
             <div class="sub-container">
-                @let oneMonthReturn = (oneMonthReturn$ | async) ?? 0;
+                <div class="metric-label">1-Month Return</div>
                 <div [ngClass]="oneMonthReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneMonthReturn |
                     percent:'1.2-2'}}</div>
-                <div class="text">1-Month Return</div>
             </div>
+
+            @let oneYearReturn = (oneYearReturn$ | async) ?? 0;
             <div class="sub-container">
-                @let oneYearReturn = (oneYearReturn$ | async) ?? 0;
+                <div class="metric-label">1-Year Return</div>
                 <div [ngClass]="oneYearReturn >= 0 ? 'percentage-green' : 'percentage-red'">{{oneYearReturn |
                     percent:'1.2-2'}}</div>
-                <div class="text">1-Year Return</div>
             </div>
         </div>
     </mat-card-content>
@@ -66,8 +69,8 @@
         </mat-card-footer>
     </mat-card>
 
-    <mat-card class="chart-card">
-        <mat-card-header>
+    <mat-card class="chart-card allocation-card">
+        <mat-card-header class="allocation-card-header">
             <mat-card-title>
                 <span>Current Asset Allocation</span>
                 <button matIconButton (click)="getInsight()" matTooltip="AI Insight"
