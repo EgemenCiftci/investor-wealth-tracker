@@ -101,9 +101,9 @@ export class AuthenticationService {
       const userJson = JSON.stringify(userCredential.user);
       localStorage.setItem('user', userJson);
       return true;
-    } catch (error) {
-      // Silent sign-in failed or user not logged in to Chrome - this is expected
-      // Do not treat as an error since it's a normal flow
+    } catch {
+      // Silent sign-in failure is expected when there is no Chrome session to reuse;
+      // return false so the normal unauthenticated flow continues without an error.
       return false;
     }
   }
